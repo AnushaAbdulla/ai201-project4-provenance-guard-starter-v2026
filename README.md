@@ -39,6 +39,34 @@
 <!-- The path a submission takes, from arriving to the label a reader sees.
      Six or seven steps — this is the trace you wrote in Milestone 1. -->
 
+Provenance Guard takes a piece of writing and tells the reader, in plain words,
+whether it looks like a person or an AI tool wrote it. If it gets that wrong,
+the writer can appeal. A submission goes through seven steps:
+
+1. **It arrives at `POST /submit`** (`app.py`). Flask turns the JSON body into
+   a dict. In unit 8 the rate limiter checks the caller here first.
+2. **It's checked and given an ID** (`app.py::submit`). Missing, empty, too
+   short or too long input is refused with a `400` and logged as `rejected`.
+   Good input gets a `content_id`, the handle the appeal needs later.
+3. **Signal one reads it** (`detector.py::model_signal`). gpt2 measures how
+   predictable the first ~300 words are. That gives `model_score`, 0–1.
+4. **Signal two measures its shape** (`stylometry.py::style_signal`). It looks
+   at sentence-length spread, vocabulary variety and expressive punctuation.
+   That gives `style_score`, 0–1.
+5. **The two become one score** (`scoring.py::combine_signals`). The two
+   signals are averaged, and an AI label needs both of them to lean AI. That
+   gives `combined_score`.
+6. **The score becomes words** (`scoring.py::score_to_label`). The score is
+   mapped to a `guess` and a full-sentence `label` written for the reader.
+7. **It's logged, then answered** (`audit.py::log_decision`). Both signal
+   scores, the combined score, the guess, the label and `status: "decided"`
+   are appended to `logs/audit.jsonl`. Then the JSON response goes back with
+   the label.
+
+If the writer disagrees, `POST /appeal` takes the `content_id` and their
+reasoning. It appends an appeal entry next to the original decision and sets
+the status to `under_review`. Nothing is re-scored or overwritten.
+
 **Input rules for `/submit`:** `text` must be 30+ words and at most 20,000 characters; `creator_id` must be 1–100 characters.
 **Bad input gets a `400`** with one of `invalid_json`, `missing_text`, `text_too_short`, `text_too_long`, `missing_creator_id` (or `503 detector_unavailable` if the model won't load), and every refusal is logged as `rejected`.
 
@@ -56,19 +84,54 @@
 
 ### Signal one — the model signal
 
-**What it measures:**
+**What it measures:** Perplexity: how surprised gpt2 is by each next word,
+averaged over the text (the first 400 tokens). `detector.py::model_signal`
+maps it to 0–1 so that a perplexity of 45 scores 0.5. Lower perplexity, which
+means more predictable text, scores closer to 1 (more AI).
 
-**Why that might differ between human and AI writing:**
+**Why that might differ between human and AI writing:** A language model
+writes by repeatedly picking a likely next word, so its output is text another
+model finds easy to predict. People make odder choices: specific details,
+abrupt turns, words a model wouldn't guess.
 
-**What it can't see:**
+**What it can't see:** Who wrote it. Predictability isn't authorship. Plain
+writing (common words, short sentences) is predictable whoever writes it, so
+second-language writers, younger writers and anyone writing simply on purpose
+score as machine-like. My plain human test paragraph scored 0.91, higher
+than the clearly-AI one at 0.88. It also misses AI text made "surprising"
+with rare words, synonym swaps or a paraphraser. It only reads the first ~300
+words. It scores famous or formulaic text (memorised quotes, recipes,
+boilerplate) as AI.
 
 ### Signal two — the style signal
 
-**What it measures:**
+**What it measures:** The shape of the text, with no understanding of the
+words. It uses three measures, each scaled to 0–1 and averaged in
+`stylometry.py::style_signal`:
+- **Sentence-length spread:** the standard deviation of sentence lengths over
+  their mean. Even lengths read as AI-like: 0.20 or less counts as fully
+  AI-like, 0.70 or more as fully human.
+- **Type-token ratio:** unique words over total words, averaged over a 50-word
+  sliding window so text length doesn't skew it. 0.75 or less counts as fully
+  AI-like, 0.90 or more as fully human.
+- **Expressive punctuation:** semicolons, colons, dashes, brackets, `?` and
+  `!` per 100 words. None at all counts as fully AI-like, 5 or more as fully
+  human.
 
-**Why that might differ between human and AI writing:**
+A single-sentence text counts as neutral on spread.
 
-**What it can't see:**
+**Why that might differ between human and AI writing:** "Most likely next
+word" produces even, mid-length sentences, a safe middle band of vocabulary
+and tidy punctuation. Human writing is lumpier: a three-word sentence next to
+a forty-word one, a dash or a bracket where a comma would do.
+
+**What it can't see:** Anything the text says. It can't read, so any change
+to shape without a change to substance moves it. Typos raise vocabulary
+variety. Splitting sentences raises the spread. A pasted quote or a few
+dashes add punctuation. Asking the AI to "vary sentence length" beats it at
+the source. It also can't tell plain human writing from AI: my plain human
+test paragraph scored 0.82, so it shares signal one's blind spot instead of
+covering for it.
 
 ### The combining rule
 
@@ -254,15 +317,25 @@ $ curl "http://127.0.0.1:5000/log?limit=2"
 
 **Moment 1**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* A Milestone 1 design written up as a separate
+  `DESIGN.md`: the path, both signals with their blind spots, the
+  false-positive trace and the endpoint contract.
+- *What came back:* A long design doc, which `criteria.md` and comments in
+  `app.py` then pointed to for the error codes.
+- *What I changed:* I deleted `DESIGN.md` rather than keep a second document.
+  I moved the two things that mattered (the input limits and the error codes)
+  into this README's "What This Does" section and re-pointed the references
+  here.
 
 **Moment 2**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* Five acceptance criteria, shown to me in the chat first
+  so I could approve them before anything was written to `criteria.md`.
+- *What came back:* Five criteria, one per area (false positives, score
+  spread, label coverage, the appeal path, bad input), with a note that none
+  of them directly measure how much AI text gets caught.
+- *What I changed:* I reviewed them before approving, then had them written
+  in. <!-- TODO: say in your own words what you checked or would change. -->
 
 <!-- ═══════════════════════ UNIT 8 — THE TEST ═══════════════════════ -->
 
