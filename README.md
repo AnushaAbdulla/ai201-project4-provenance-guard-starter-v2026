@@ -39,6 +39,9 @@
 <!-- The path a submission takes, from arriving to the label a reader sees.
      Six or seven steps — this is the trace you wrote in Milestone 1. -->
 
+**Input rules for `/submit`:** `text` must be 30+ words and at most 20,000 characters; `creator_id` must be 1–100 characters.
+**Bad input gets a `400`** with one of `invalid_json`, `missing_text`, `text_too_short`, `text_too_long`, `missing_creator_id` (or `503 detector_unavailable` if the model won't load), and every refusal is logged as `rejected`.
+
 
 
 ---
@@ -124,11 +127,25 @@
 ```bash
 $ curl -X POST http://127.0.0.1:5000/submit \
   -H "Content-Type: application/json" \
-  -d '{"text": "...", "creator_id": "..."}'
+  -d '{"text": "I moved to this city two years ago. At first it was hard for me. I did not know many people and my English was not very good. Now I have a job and some friends. I think the most important thing is to be patient. Every day I learn something new.", "creator_id": "writer-42"}'
 ```
 
-```json
+<!-- Milestone 3 run: signal one only. style_score, combined_score and the
+     label are still placeholders — re-run and replace this after Milestone 5. -->
 
+```json
+{
+  "combined_score": null,
+  "confidence": 0.5,
+  "content_id": "0e9adb64-794f-47b7-a283-565490606382",
+  "creator_id": "writer-42",
+  "guess": "unsure",
+  "label": "PLACEHOLDER \u2014 the label is built in Milestone 5.",
+  "model_score": 0.9112,
+  "status": "decided",
+  "style_score": null,
+  "truncated": false
+}
 ```
 
 **An appeal**
@@ -146,11 +163,51 @@ $ curl -X POST http://127.0.0.1:5000/appeal \
 **What the log shows afterwards**
 
 ```bash
-$ curl "http://127.0.0.1:5000/log?limit=3"
+$ curl "http://127.0.0.1:5000/log?limit=4"
 ```
 
-```json
+<!-- Milestone 3 run: the submission above, then three bad requests (too
+     short, no text field, a body that isn't JSON), each refused with a 400
+     and logged as rejected. Replace with the appeal flow after Milestone 5. -->
 
+```json
+{
+  "count": 4,
+  "entries": [
+    {
+      "combined_score": null,
+      "content_id": "0e9adb64-794f-47b7-a283-565490606382",
+      "creator_id": "writer-42",
+      "guess": "unsure",
+      "label": "PLACEHOLDER \u2014 the label is built in Milestone 5.",
+      "model_score": 0.9112,
+      "status": "decided",
+      "style_score": null,
+      "timestamp": "2026-11-02T22:26:02+00:00"
+    },
+    {
+      "creator_id": "writer-42",
+      "event": "rejected",
+      "reason": "text_too_short",
+      "status": "rejected",
+      "timestamp": "2026-11-02T22:26:02+00:00"
+    },
+    {
+      "creator_id": "writer-42",
+      "event": "rejected",
+      "reason": "missing_text",
+      "status": "rejected",
+      "timestamp": "2026-11-02T22:26:02+00:00"
+    },
+    {
+      "creator_id": "unknown",
+      "event": "rejected",
+      "reason": "invalid_json",
+      "status": "rejected",
+      "timestamp": "2026-11-02T22:26:02+00:00"
+    }
+  ]
+}
 ```
 
 ---

@@ -94,7 +94,7 @@ made-up-ID half catches the silent-typo failure that RUNNING.md warns about.
 
 I send 6 malformed requests: missing `text`, an empty string, whitespace only,
 29 words, 20,001 characters, and a body that isn't JSON. All 6 return `400`
-with the error code named in `DESIGN.md`, none return `500`, and each leaves a
+with the error code listed in the README, none return `500`, and each leaves a
 `rejected` entry in the log.
 
 **Why this target:** A crash on malformed input is one of the most common real

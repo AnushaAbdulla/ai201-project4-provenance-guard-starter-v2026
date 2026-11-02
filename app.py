@@ -150,6 +150,12 @@ def health():
 
 # ── YOU BUILD THIS ────────────────────────────────────────────────────────────
 
+# Input limits for /submit — see README, What This Does.
+MIN_TEXT_WORDS = 30
+MAX_TEXT_CHARS = 20_000
+MAX_CREATOR_ID_CHARS = 100
+
+
 @app.post("/submit")
 # @limiter.limit(f"{config.RATE_LIMIT_PER_MINUTE}/minute;{config.RATE_LIMIT_PER_DAY}/day")
 def submit():
@@ -199,17 +205,75 @@ def submit():
     what should this do when `text` is missing, empty, or enormous? A crash on
     a malformed input is one of the most common real failures there is.
     """
-    payload = request.get_json(silent=True) or {}
+    import detector
 
-    # TODO: delete this and build the route.
+    payload = request.get_json(silent=True)
+
+    # Refuse bad input with the error codes listed in the README. Every refusal is
+    # logged, so a rejected request still leaves a trace.
+    def reject(code, message, status=400):
+        creator = payload.get("creator_id") if isinstance(payload, dict) else None
+        audit.log_rejection(
+            creator_id=creator if isinstance(creator, str) else "unknown",
+            reason=code,
+        )
+        return jsonify({"error": code, "message": message}), status
+
+    if not isinstance(payload, dict):
+        return reject("invalid_json", "Send a JSON object with 'text' and 'creator_id'.")
+
+    text = payload.get("text")
+    if not isinstance(text, str):
+        return reject("missing_text", "The request needs a 'text' field containing your writing.")
+    text = text.strip()
+    if len(text) > MAX_TEXT_CHARS:
+        return reject("text_too_long", f"That's over {MAX_TEXT_CHARS:,} characters. Try a shorter piece.")
+    if len(text.split()) < MIN_TEXT_WORDS:
+        return reject("text_too_short", f"We need at least {MIN_TEXT_WORDS} words to say anything useful.")
+
+    creator_id = payload.get("creator_id")
+    creator_id = creator_id.strip() if isinstance(creator_id, str) else ""
+    if not creator_id or len(creator_id) > MAX_CREATOR_ID_CHARS:
+        return reject("missing_creator_id", f"The request needs a 'creator_id' of 1–{MAX_CREATOR_ID_CHARS} characters.")
+
+    try:
+        model_score = detector.model_signal(text)
+    except detector.DetectorUnavailable:
+        return reject("detector_unavailable", "The detector isn't available right now. Nothing was scored.", 503)
+
+    # Signal one only reads the first DETECTOR_MAX_TOKENS tokens.
+    truncated = len(detector._tokenizer(text)["input_ids"]) > config.DETECTOR_MAX_TOKENS
+
+    content_id = str(uuid.uuid4())
+
+    # Placeholders until Milestones 4 and 5: no second signal, no combining
+    # rule, no label yet.
+    style_score = None
+    guess = "unsure"
+    confidence = 0.5
+    label = "PLACEHOLDER — the label is built in Milestone 5."
+
+    audit.log_decision(
+        content_id=content_id,
+        creator_id=creator_id,
+        guess=guess,
+        model_score=model_score,
+        style_score=style_score,
+        label=label,
+    )
+
     return jsonify({
-        "error": "not_implemented",
-        "message": "POST /submit isn't built yet — see the TODO in app.py.",
-        "you_sent": {
-            "text_length": len(payload.get("text", "")),
-            "creator_id": payload.get("creator_id"),
-        },
-    }), 501
+        "content_id": content_id,
+        "creator_id": creator_id,
+        "guess": guess,
+        "label": label,
+        "confidence": confidence,
+        "combined_score": None,
+        "model_score": model_score,
+        "style_score": style_score,
+        "truncated": truncated,
+        "status": "decided",
+    })
 
 
 @app.post("/appeal")

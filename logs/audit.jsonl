@@ -1,0 +1,8 @@
+{"timestamp": "2026-11-02T22:25:37+00:00", "creator_id": "writer-42", "event": "rejected", "status": "rejected", "reason": "missing_text"}
+{"timestamp": "2026-11-02T22:25:37+00:00", "creator_id": "unknown", "event": "rejected", "status": "rejected", "reason": "invalid_json"}
+{"timestamp": "2026-11-02T22:26:02+00:00", "content_id": "0e9adb64-794f-47b7-a283-565490606382", "creator_id": "writer-42", "guess": "unsure", "model_score": 0.9112, "style_score": null, "combined_score": null, "label": "PLACEHOLDER — the label is built in Milestone 5.", "status": "decided"}
+{"timestamp": "2026-11-02T22:26:02+00:00", "creator_id": "writer-42", "event": "rejected", "status": "rejected", "reason": "text_too_short"}
+{"timestamp": "2026-11-02T22:26:02+00:00", "creator_id": "writer-42", "event": "rejected", "status": "rejected", "reason": "missing_text"}
+{"timestamp": "2026-11-02T22:26:02+00:00", "creator_id": "unknown", "event": "rejected", "status": "rejected", "reason": "invalid_json"}
+{"timestamp": "2026-11-02T23:07:28+00:00", "content_id": "e2b7920d-6ac9-479d-a354-c29f90c458a2", "creator_id": "writer-42", "guess": "unsure", "model_score": 0.8864, "style_score": null, "combined_score": null, "label": "PLACEHOLDER — the label is built in Milestone 5.", "status": "decided"}
+{"timestamp": "2026-11-02T23:07:28+00:00", "creator_id": "writer-42", "event": "rejected", "status": "rejected", "reason": "text_too_short"}
