@@ -18,6 +18,27 @@ you claim, so that line should read `scoring.py::combine_signals`.
 
 import config
 
+# The exact text a reader sees. Written for someone who has never heard the
+# word "threshold" — and, for the two that aren't "human", for someone who may
+# well have written every word themselves.
+LABEL_HUMAN = "We think this was probably written by a person."
+
+LABEL_UNSURE = (
+    "We can't tell whether this was written by a person or with an AI tool. "
+    "That happens a lot, and it isn't a judgement about you or your work. "
+    "If you wrote it yourself, you don't need to do anything — but if you'd "
+    "like a person to look at it, you can ask for a review using the content "
+    "ID shown with this result."
+)
+
+LABEL_AI = (
+    "This text has a lot in common with writing produced by AI tools, so we "
+    "think it may not have been written by a person. This is an automatic "
+    "guess and it can be wrong — clear, simple writing is sometimes mistaken "
+    "for AI. If you wrote this yourself, you can ask a person to review it "
+    "using the content ID shown with this result."
+)
+
 
 def combine_signals(model_score: float, style_score: float) -> float:
     """
@@ -88,12 +109,11 @@ def score_to_label(score: float) -> tuple[str, str]:
     think if they got it on their own work. That question is the whole
     milestone.
     """
-    # TODO: replace this — thresholds are in config.py
     if score >= config.AI_THRESHOLD:
-        return "ai", "PLACEHOLDER — write the high-confidence AI label."
+        return "ai", LABEL_AI
     if score <= config.HUMAN_THRESHOLD:
-        return "human", "PLACEHOLDER — write the high-confidence human label."
-    return "unsure", "PLACEHOLDER — write the unsure label."
+        return "human", LABEL_HUMAN
+    return "unsure", LABEL_UNSURE
 
 
 def label_ranges() -> list[tuple[str, str]]:

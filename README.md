@@ -134,16 +134,25 @@ traced in Milestone 1, and criterion 1 is where it will show up.
 
 | Label | Score range | The exact text a reader sees |
 |---|---|---|
-| high-confidence human |  |  |
-| unsure |  |  |
-| high-confidence AI |  |  |
+| high-confidence human | 0.00 – 0.35 | We think this was probably written by a person. |
+| unsure | above 0.35, below 0.75 | We can't tell whether this was written by a person or with an AI tool. That happens a lot, and it isn't a judgement about you or your work. If you wrote it yourself, you don't need to do anything — but if you'd like a person to look at it, you can ask for a review using the content ID shown with this result. |
+| high-confidence AI | 0.75 – 1.00 | This text has a lot in common with writing produced by AI tools, so we think it may not have been written by a person. This is an automatic guess and it can be wrong — clear, simple writing is sometimes mistaken for AI. If you wrote this yourself, you can ask a person to review it using the content ID shown with this result. |
+
+All three are reachable. From my test inputs: clearly human text scored 0.20
+(human), lightly edited AI scored 0.68 (unsure), and clearly AI text scored
+0.90 (AI).
 
 **Why I worded the "unsure" one this way:**
 <!-- It's the hardest of the three. It has to admit uncertainty without
      sounding like an accusation, because the person reading it may well have
      written every word themselves. -->
 
-
+The person reading it may have written every word, so it says "we can't
+tell" about *us*, not "this might be AI" about *them*. It says outright that
+this result is common and isn't a judgement, and that a writer who wrote it
+themselves doesn't need to do anything. A review is offered as an option, not
+demanded. I didn't use the word "suspicious", any score, or "AI-generated"
+on its own, because those all read as an accusation with a hedge attached.
 
 ---
 
@@ -159,26 +168,27 @@ traced in Milestone 1, and criterion 1 is where it will show up.
      two off the response, so leaving them out costs you next unit's
      diagnostics. -->
 
+This is plain human writing, the false positive from Milestone 1. Both
+signals read it as AI, so it gets the AI label. That's why it's the one I
+appeal.
+
 ```bash
 $ curl -X POST http://127.0.0.1:5000/submit \
   -H "Content-Type: application/json" \
-  -d '{"text": "I moved to this city two years ago. At first it was hard for me. I did not know many people and my English was not very good. Now I have a job and some friends. I think the most important thing is to be patient. Every day I learn something new.", "creator_id": "writer-42"}'
+  -d '{"text": "I moved to this city two years ago. At first it was hard for me. I did not know many people and my English was not very good. Now I have a job and some friends. I think the most important thing is to be patient. Every day I learn something new. My manager is kind and helps me when I have a problem. I want to study more next year.", "creator_id": "writer-42"}'
 ```
-
-<!-- Milestone 3 run: signal one only. style_score, combined_score and the
-     label are still placeholders — re-run and replace this after Milestone 5. -->
 
 ```json
 {
-  "combined_score": null,
-  "confidence": 0.5,
-  "content_id": "0e9adb64-794f-47b7-a283-565490606382",
+  "combined_score": 0.8589,
+  "confidence": 0.8589,
+  "content_id": "f4b4b712-20e8-4f3a-9295-a43859f5efeb",
   "creator_id": "writer-42",
-  "guess": "unsure",
-  "label": "PLACEHOLDER \u2014 the label is built in Milestone 5.",
-  "model_score": 0.9112,
+  "guess": "ai",
+  "label": "This text has a lot in common with writing produced by AI tools, so we think it may not have been written by a person. This is an automatic guess and it can be wrong \u2014 clear, simple writing is sometimes mistaken for AI. If you wrote this yourself, you can ask a person to review it using the content ID shown with this result.",
+  "model_score": 0.8958,
   "status": "decided",
-  "style_score": null,
+  "style_score": 0.822,
   "truncated": false
 }
 ```
@@ -188,58 +198,51 @@ $ curl -X POST http://127.0.0.1:5000/submit \
 ```bash
 $ curl -X POST http://127.0.0.1:5000/appeal \
   -H "Content-Type: application/json" \
-  -d '{"content_id": "...", "reasoning": "..."}'
+  -d '{"content_id": "f4b4b712-20e8-4f3a-9295-a43859f5efeb", "reasoning": "I wrote this myself about my first two years here. English is my second language, so I keep my sentences simple on purpose."}'
 ```
 
 ```json
-
+{
+  "appealed_at": "2026-11-02T23:41:04+00:00",
+  "content_id": "f4b4b712-20e8-4f3a-9295-a43859f5efeb",
+  "message": "Thanks \u2014 your appeal is recorded and a person will review it. The original result isn't final while that happens.",
+  "original_guess": "ai",
+  "original_label": "This text has a lot in common with writing produced by AI tools, so we think it may not have been written by a person. This is an automatic guess and it can be wrong \u2014 clear, simple writing is sometimes mistaken for AI. If you wrote this yourself, you can ask a person to review it using the content ID shown with this result.",
+  "status": "under_review"
+}
 ```
 
 **What the log shows afterwards**
 
-```bash
-$ curl "http://127.0.0.1:5000/log?limit=4"
-```
+The original decision is still there, unchanged, with the appeal appended
+after it, now `under_review`.
 
-<!-- Milestone 3 run: the submission above, then three bad requests (too
-     short, no text field, a body that isn't JSON), each refused with a 400
-     and logged as rejected. Replace with the appeal flow after Milestone 5. -->
+```bash
+$ curl "http://127.0.0.1:5000/log?limit=2"
+```
 
 ```json
 {
-  "count": 4,
+  "count": 2,
   "entries": [
     {
-      "combined_score": null,
-      "content_id": "0e9adb64-794f-47b7-a283-565490606382",
+      "combined_score": 0.8589,
+      "content_id": "f4b4b712-20e8-4f3a-9295-a43859f5efeb",
       "creator_id": "writer-42",
-      "guess": "unsure",
-      "label": "PLACEHOLDER \u2014 the label is built in Milestone 5.",
-      "model_score": 0.9112,
+      "guess": "ai",
+      "label": "This text has a lot in common with writing produced by AI tools, so we think it may not have been written by a person. This is an automatic guess and it can be wrong \u2014 clear, simple writing is sometimes mistaken for AI. If you wrote this yourself, you can ask a person to review it using the content ID shown with this result.",
+      "model_score": 0.8958,
       "status": "decided",
-      "style_score": null,
-      "timestamp": "2026-11-02T22:26:02+00:00"
+      "style_score": 0.822,
+      "timestamp": "2026-11-02T23:40:55+00:00"
     },
     {
+      "content_id": "f4b4b712-20e8-4f3a-9295-a43859f5efeb",
       "creator_id": "writer-42",
-      "event": "rejected",
-      "reason": "text_too_short",
-      "status": "rejected",
-      "timestamp": "2026-11-02T22:26:02+00:00"
-    },
-    {
-      "creator_id": "writer-42",
-      "event": "rejected",
-      "reason": "missing_text",
-      "status": "rejected",
-      "timestamp": "2026-11-02T22:26:02+00:00"
-    },
-    {
-      "creator_id": "unknown",
-      "event": "rejected",
-      "reason": "invalid_json",
-      "status": "rejected",
-      "timestamp": "2026-11-02T22:26:02+00:00"
+      "event": "appeal",
+      "reasoning": "I wrote this myself about my first two years here. English is my second language, so I keep my sentences simple on purpose.",
+      "status": "under_review",
+      "timestamp": "2026-11-02T23:41:04+00:00"
     }
   ]
 }

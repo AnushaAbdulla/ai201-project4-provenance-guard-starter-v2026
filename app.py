@@ -154,6 +154,7 @@ def health():
 MIN_TEXT_WORDS = 30
 MAX_TEXT_CHARS = 20_000
 MAX_CREATOR_ID_CHARS = 100
+MAX_REASONING_CHARS = 5_000
 
 
 @app.post("/submit")
@@ -253,9 +254,7 @@ def submit():
     # How far the score leans either way, 0.5–1.0. `guess` gives the direction.
     confidence = round(max(combined_score, 1 - combined_score), 4)
 
-    # Placeholders until Milestone 5: no label yet.
-    guess = "unsure"
-    label = "PLACEHOLDER — the label is built in Milestone 5."
+    guess, label = scoring.score_to_label(combined_score)
 
     audit.log_decision(
         content_id=content_id,
@@ -301,14 +300,61 @@ def appeal():
     to the person on the other end. It's the only thing standing between a
     wrong accusation and nothing at all.
     """
-    payload = request.get_json(silent=True) or {}
+    payload = request.get_json(silent=True)
 
-    # TODO: delete this and build the route.
+    # Same error shape as /submit, and refusals leave a trace here too.
+    def reject(code, message, status=400, content_id=None):
+        audit.log_rejection(creator_id="unknown", reason=code, content_id=content_id)
+        return jsonify({"error": code, "message": message}), status
+
+    if not isinstance(payload, dict):
+        return reject("invalid_json", "Send a JSON object with 'content_id' and 'reasoning'.")
+
+    content_id = payload.get("content_id")
+    content_id = content_id.strip() if isinstance(content_id, str) else ""
+    if not content_id:
+        return reject("missing_content_id", "The request needs the 'content_id' from your result.")
+
+    reasoning = payload.get("reasoning")
+    reasoning = reasoning.strip() if isinstance(reasoning, str) else ""
+    if not reasoning or len(reasoning) > MAX_REASONING_CHARS:
+        return reject("missing_reasoning", f"Tell us in 1–{MAX_REASONING_CHARS:,} characters why you think the result is wrong.")
+
+    entries = audit.entries_for(content_id)
+    decision = next((e for e in entries if e.get("status") == "decided"), None)
+    if decision is None:
+        return reject(
+            "unknown_content_id",
+            f"We couldn't find a result with the ID '{content_id}'. Check it matches the one shown with your result.",
+            404,
+            content_id,
+        )
+    if any(e.get("event") == "appeal" for e in entries):
+        return reject(
+            "already_under_review",
+            "This result has already been appealed and is waiting for a person to review it.",
+            409,
+            content_id,
+        )
+
+    # The appeal is attached to whoever was judged, not whoever sent this.
+    appeal_entry = audit.log_appeal(
+        content_id=content_id,
+        creator_id=decision["creator_id"],
+        reasoning=reasoning,
+    )
+
     return jsonify({
-        "error": "not_implemented",
-        "message": "POST /appeal isn't built yet — see the TODO in app.py.",
-        "you_sent": payload,
-    }), 501
+        "content_id": content_id,
+        "status": appeal_entry["status"],
+        "original_guess": decision.get("guess"),
+        "original_label": decision.get("label"),
+        "appealed_at": appeal_entry["timestamp"],
+        "message": (
+            "Thanks — your appeal is recorded and a person will review it. "
+            "The original result isn't final while that happens."
+        ),
+    })
 
 
 # ── Already works ─────────────────────────────────────────────────────────────
