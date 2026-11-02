@@ -317,25 +317,15 @@ $ curl "http://127.0.0.1:5000/log?limit=2"
 
 **Moment 1**
 
-- *What I asked for:* A Milestone 1 design written up as a separate
-  `DESIGN.md`: the path, both signals with their blind spots, the
-  false-positive trace and the endpoint contract.
-- *What came back:* A long design doc, which `criteria.md` and comments in
-  `app.py` then pointed to for the error codes.
-- *What I changed:* I deleted `DESIGN.md` rather than keep a second document.
-  I moved the two things that mattered (the input limits and the error codes)
-  into this README's "What This Does" section and re-pointed the references
-  here.
+- *What I asked for:* Help write out the steps and undestand the codebase
+- *What came back:* A clean explanation of what was happening in each file
+- *What I changed:* nothing
 
 **Moment 2**
 
-- *What I asked for:* Five acceptance criteria, shown to me in the chat first
-  so I could approve them before anything was written to `criteria.md`.
-- *What came back:* Five criteria, one per area (false positives, score
-  spread, label coverage, the appeal path, bad input), with a note that none
-  of them directly measure how much AI text gets caught.
-- *What I changed:* I reviewed them before approving, then had them written
-  in. <!-- TODO: say in your own words what you checked or would change. -->
+- *What I asked for:* Are my acceptance criteria good and is the work for this milestone done?
+- *What came back:* feedback on what to change (not useful)
+- *What I changed:* I liked my criteria so I kept them
 
 <!-- ═══════════════════════ UNIT 8 — THE TEST ═══════════════════════ -->
 
