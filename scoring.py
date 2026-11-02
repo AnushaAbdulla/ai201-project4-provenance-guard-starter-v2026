@@ -52,11 +52,14 @@ def combine_signals(model_score: float, style_score: float) -> float:
     The weights in config.py are placeholders. Change them, or ignore them and
     write a different rule.
     """
-    # TODO: replace this
-    return (
+    combined = (
         config.WEIGHT_MODEL_SIGNAL * model_score
         + config.WEIGHT_STYLE_SIGNAL * style_score
     )
+    # Agreement rule: no AI label unless both signals lean AI on their own.
+    if min(model_score, style_score) < config.AGREEMENT_FLOOR:
+        combined = min(combined, config.AI_THRESHOLD - 0.01)
+    return round(combined, 4)
 
 
 def score_to_label(score: float) -> tuple[str, str]:

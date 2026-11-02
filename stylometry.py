@@ -33,6 +33,22 @@ anything together:
 import re
 import statistics
 
+# Moving-average window for type_token_ratio, in words.
+TTR_WINDOW = 50
+
+# Punctuation that varies between writers: semicolons, colons, dashes,
+# brackets, question and exclamation marks.
+EXPRESSIVE_PUNCTUATION = ";:—–()?!"
+
+# (AI-typical value, human-typical value) for each measure, set from the
+# calibration inputs in Milestone 4. style_signal scales each onto 0–1 between
+# these, so no measure wins just by having bigger numbers.
+SCALE = {
+    "spread": (0.20, 0.70),   # coefficient of variation of sentence length
+    "ttr":    (0.75, 0.90),   # moving-average type-token ratio
+    "punct":  (0.0, 5.0),     # expressive marks per 100 words
+}
+
 
 def sentences(text: str) -> list[str]:
     """Split into sentences. Rough and good enough — given to you."""
@@ -64,8 +80,15 @@ def sentence_length_spread(text: str) -> float:
     `stdev` raises on fewer than two values. Decide what that should return
     before the attack set decides for you.
     """
-    # TODO: replace this
-    return 0.0
+    lengths = [len(words(s)) for s in sentences(text)]
+    lengths = [n for n in lengths if n > 0]
+    # One sentence has no spread to measure. 0.0 here; style_signal treats
+    # it as "no evidence" rather than as perfectly even.
+    if len(lengths) < 2:
+        return 0.0
+    # Coefficient of variation: stdev over mean, so long and short texts
+    # compare. Higher means more varied, which points human.
+    return round(statistics.stdev(lengths) / statistics.mean(lengths), 4)
 
 
 def type_token_ratio(text: str) -> float:
@@ -80,8 +103,18 @@ def type_token_ratio(text: str) -> float:
     directly comparable on it, and if your test inputs vary a lot in length,
     that alone can look like a signal.
     """
-    # TODO: replace this
-    return 0.0
+    toks = words(text)
+    if not toks:
+        return 0.0
+    # Plain TTR falls as text gets longer, so average it over a sliding
+    # window instead (moving-average TTR). Short texts get plain TTR.
+    if len(toks) <= TTR_WINDOW:
+        return round(len(set(toks)) / len(toks), 4)
+    ratios = [
+        len(set(toks[i:i + TTR_WINDOW])) / TTR_WINDOW
+        for i in range(len(toks) - TTR_WINDOW + 1)
+    ]
+    return round(sum(ratios) / len(ratios), 4)
 
 
 def punctuation_density(text: str) -> float:
@@ -94,8 +127,15 @@ def punctuation_density(text: str) -> float:
         more interesting than full stops, because they vary more between
         writers.
     """
-    # TODO: replace this
-    return 0.0
+    toks = words(text)
+    if not toks:
+        return 0.0
+    # Only the marks that vary between writers. Full stops and commas are
+    # left out because everyone uses them.
+    marks = sum(text.count(c) for c in EXPRESSIVE_PUNCTUATION)
+    marks += len(re.findall(r"\s-\s|--", text))   # dashes typed as hyphens
+    # Per 100 words. Higher means more varied punctuation, which points human.
+    return round(100 * marks / len(toks), 4)
 
 
 # ── Combining them ───────────────────────────────────────────────────────────
@@ -122,8 +162,20 @@ def style_signal(text: str) -> float:
     you trust it. Plain and ordinary, not formal: formal prose reads as *human*
     to signal one, and it is plain writing that gets accused.
     """
-    # TODO: replace this
-    return 0.5
+    # Each measure points human when high, so each is flipped: its AI-typical
+    # value maps to 1.0 and its human-typical value to 0.0, clamped between.
+    def ai_ness(value, ai_end, human_end):
+        return min(max((human_end - value) / (human_end - ai_end), 0.0), 1.0)
+
+    lo, hi = SCALE["spread"]
+    # One sentence has no spread, which is no evidence either way.
+    spread = 0.5 if len(sentences(text)) < 2 else ai_ness(sentence_length_spread(text), lo, hi)
+    lo, hi = SCALE["ttr"]
+    ttr = ai_ness(type_token_ratio(text), lo, hi)
+    lo, hi = SCALE["punct"]
+    punct = ai_ness(punctuation_density(text), lo, hi)
+
+    return round((spread + ttr + punct) / 3, 4)
 
 
 if __name__ == "__main__":

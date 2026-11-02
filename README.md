@@ -75,9 +75,27 @@
 <!-- Write the rule in words, then give the numbers. What happens when the two
      signals disagree? -->
 
-**The rule:**
+**The rule:** Average the two signals, equally weighted. An AI label also
+needs *both* signals to lean AI on their own: if either one is below the
+agreement floor, the score is capped just under the AI threshold, so it can
+land in "unsure" but never in "AI". One signal alone can't produce an
+accusation. When they disagree in the other direction (one says human), the
+average already pulls the score toward the middle, and I leave that alone,
+because two methods disagreeing *is* uncertainty.
 
-**The numbers:**
+**The numbers:** (in `config.py`)
+
+| Setting | Value |
+|---|---|
+| `WEIGHT_MODEL_SIGNAL` | 0.5 |
+| `WEIGHT_STYLE_SIGNAL` | 0.5 |
+| `AGREEMENT_FLOOR` (each signal must reach this for an AI label) | 0.60 |
+| `HUMAN_THRESHOLD` (at or below → high-confidence human) | 0.35 |
+| `AI_THRESHOLD` (at or above → high-confidence AI) | 0.75 |
+
+The AI threshold sits at 0.75, not the starter's 0.65, so the unsure band
+is wider on the AI side: a wrong accusation costs a writer more than a
+missed detection costs the site.
 
 **Where it lives:** `scoring.py::combine_signals`
 
@@ -85,6 +103,23 @@
      somewhere else, say where. -->
 
 **A case where my two signals split, and what my rule does with it:**
+
+Formal human writing: a dense paragraph about a municipal permit dispute, with
+semicolons, a colon, dashes, and sentences from 4 to 40+ words. Signal one gave
+it **0.487** (the rare legal vocabulary surprised gpt2, so it was unsure).
+Signal two gave it **0.050** (very uneven sentences, varied vocabulary, lots
+of expressive punctuation). The average is **0.269**, below the human
+threshold, so it's labelled human. The rule did what I want here: when one
+signal is unsure and the other is confident it's human, the writer isn't
+pushed toward an accusation.
+
+The case my rule *can't* fix is the one where the signals agree and are both
+wrong. Plain human writing (short sentences, common words, no semicolons or
+dashes) scored **0.896** on signal one and **0.822** on signal two, so it
+passes the agreement floor and lands at **0.859**, which is high-confidence AI.
+Both blind spots hit the same writer, so no weighting of these two signals
+separates them from clearly-AI text (0.896). That is the false positive I
+traced in Milestone 1, and criterion 1 is where it will show up.
 
 
 
