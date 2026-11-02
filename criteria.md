@@ -42,65 +42,67 @@ Two things worth knowing before you pick numbers:
   a **miss**.
 
 ---
-## 1.
+## 1. Few false positives on human writing
 
-<!-- Your criterion. It must name a number. -->
+Of 10 pieces of human writing, at most 1 is labelled high-confidence AI, in
+every one of the three trials. Five are pieces I wrote myself. The other five
+are plain, simple human writing: short sentences and common words, the style
+both signals are blind to.
 
-
-
-**Why this target:**
-
-
-
----
-
-## 2.
-
-<!-- Your criterion. -->
-
-
-
-**Why this target:**
-
-
+**Why this target:** Wrongly accusing a real writer costs them far more than a
+missed AI text costs the site. I include the plain-style pieces on purpose,
+because that's who my Milestone 1 trace showed getting accused. A test of only
+my own writing would hide that failure.
 
 ---
 
-## 3.
+## 2. Clearly-AI and clearly-human text score far apart
 
-<!-- Your criterion. -->
+The average `combined_score` of 5 clearly AI texts is at least 0.30 higher
+than the average of 5 clearly human texts, in every trial.
 
-
-
-**Why this target:**
-
-
-
----
-
-## 4.
-
-<!-- Your criterion. -->
-
-
-
-**Why this target:**
-
-
+**Why this target:** My labels are 0.35 and 0.75 apart. If the two kinds of
+text don't land at least 0.30 apart, the thresholds are just sorting noise. A
+gap that size means the signals are actually separating the two.
 
 ---
 
-## 5.
+## 3. Every label is reachable
 
-<!-- Your criterion. -->
+Every trial produces each of the three labels (high-confidence human, unsure,
+high-confidence AI) at least once across my scenario inputs.
 
-
-
-**Why this target:**
-
-
+**Why this target:** An unreachable label is a silent bug. The config notes
+warn that a stub style signal makes "human" impossible to reach. If a label
+never appears, the score ranges have a gap.
 
 ---
+
+## 4. Every appeal is recorded, and bad ones are refused
+
+5 of 5 appeals on a real `content_id` return `200` with
+`status: "under_review"`, and each adds exactly one appeal entry to the log.
+5 of 5 appeals on a made-up `content_id` return `404` and add no appeal entry.
+
+**Why this target:** The appeal is the only thing between a wrong accusation
+and nothing at all, so it has to work every time, not most of the time. The
+made-up-ID half catches the silent-typo failure that RUNNING.md warns about.
+
+---
+
+## 5. Bad input is refused cleanly and leaves a trace
+
+I send 6 malformed requests: missing `text`, an empty string, whitespace only,
+29 words, 20,001 characters, and a body that isn't JSON. All 6 return `400`
+with the error code named in `DESIGN.md`, none return `500`, and each leaves a
+`rejected` entry in the log.
+
+**Why this target:** A crash on malformed input is one of the most common real
+failures, and the attack set will try it. The log requirement is there because
+a refused request that leaves no trace is an attack I'd never find.
+
+---
+
 
 <!-- ─────────────────────────────────────────────────────────────────────────
      UNIT 8 — read this before you change anything above.
