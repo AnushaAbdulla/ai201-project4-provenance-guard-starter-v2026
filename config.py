@@ -98,7 +98,7 @@ AI_THRESHOLD = 0.75
 # Your README has to say why your numbers and not others.
 
 RATE_LIMITING_ENABLED = True
-RATE_LIMIT_PER_MINUTE = 5
+RATE_LIMIT_PER_MINUTE = 10
 RATE_LIMIT_PER_DAY = 100
 
 # Flask-Limiter warns loudly without this. In-memory is right for one laptop

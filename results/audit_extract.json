@@ -1,0 +1,1249 @@
+{
+  "count": 113,
+  "entries": [
+    {
+      "creator_id": "writer-42",
+      "event": "rejected",
+      "reason": "missing_text",
+      "status": "rejected",
+      "timestamp": "2026-11-02T22:25:37+00:00"
+    },
+    {
+      "creator_id": "unknown",
+      "event": "rejected",
+      "reason": "invalid_json",
+      "status": "rejected",
+      "timestamp": "2026-11-02T22:25:37+00:00"
+    },
+    {
+      "combined_score": null,
+      "content_id": "0e9adb64-794f-47b7-a283-565490606382",
+      "creator_id": "writer-42",
+      "guess": "unsure",
+      "label": "PLACEHOLDER \u2014 the label is built in Milestone 5.",
+      "model_score": 0.9112,
+      "status": "decided",
+      "style_score": null,
+      "timestamp": "2026-11-02T22:26:02+00:00"
+    },
+    {
+      "creator_id": "writer-42",
+      "event": "rejected",
+      "reason": "text_too_short",
+      "status": "rejected",
+      "timestamp": "2026-11-02T22:26:02+00:00"
+    },
+    {
+      "creator_id": "writer-42",
+      "event": "rejected",
+      "reason": "missing_text",
+      "status": "rejected",
+      "timestamp": "2026-11-02T22:26:02+00:00"
+    },
+    {
+      "creator_id": "unknown",
+      "event": "rejected",
+      "reason": "invalid_json",
+      "status": "rejected",
+      "timestamp": "2026-11-02T22:26:02+00:00"
+    },
+    {
+      "combined_score": null,
+      "content_id": "e2b7920d-6ac9-479d-a354-c29f90c458a2",
+      "creator_id": "writer-42",
+      "guess": "unsure",
+      "label": "PLACEHOLDER \u2014 the label is built in Milestone 5.",
+      "model_score": 0.8864,
+      "status": "decided",
+      "style_score": null,
+      "timestamp": "2026-11-02T23:07:28+00:00"
+    },
+    {
+      "creator_id": "writer-42",
+      "event": "rejected",
+      "reason": "text_too_short",
+      "status": "rejected",
+      "timestamp": "2026-11-02T23:07:28+00:00"
+    },
+    {
+      "combined_score": 0.8957,
+      "content_id": "a23759c1-fed6-4de2-a476-4cd4c17bb6f4",
+      "creator_id": "m4-clearly_ai",
+      "guess": "unsure",
+      "label": "PLACEHOLDER \u2014 the label is built in Milestone 5.",
+      "model_score": 0.8803,
+      "status": "decided",
+      "style_score": 0.9111,
+      "timestamp": "2026-11-02T23:11:25+00:00"
+    },
+    {
+      "combined_score": 0.2016,
+      "content_id": "254929b5-680f-4b1d-bd18-ebe8f41964a7",
+      "creator_id": "m4-clearly_human",
+      "guess": "unsure",
+      "label": "PLACEHOLDER \u2014 the label is built in Milestone 5.",
+      "model_score": 0.3355,
+      "status": "decided",
+      "style_score": 0.0676,
+      "timestamp": "2026-11-02T23:11:25+00:00"
+    },
+    {
+      "combined_score": 0.2686,
+      "content_id": "e9a25efd-06ba-43cb-b323-0e095a9ffca2",
+      "creator_id": "m4-formal_human",
+      "guess": "unsure",
+      "label": "PLACEHOLDER \u2014 the label is built in Milestone 5.",
+      "model_score": 0.4871,
+      "status": "decided",
+      "style_score": 0.05,
+      "timestamp": "2026-11-02T23:11:25+00:00"
+    },
+    {
+      "combined_score": 0.6805,
+      "content_id": "a438fe75-db02-47bd-8629-f12fef93341e",
+      "creator_id": "m4-edited_ai",
+      "guess": "unsure",
+      "label": "PLACEHOLDER \u2014 the label is built in Milestone 5.",
+      "model_score": 0.7121,
+      "status": "decided",
+      "style_score": 0.649,
+      "timestamp": "2026-11-02T23:11:25+00:00"
+    },
+    {
+      "combined_score": 0.8957,
+      "content_id": "c0e6c87c-3b99-436e-9cf5-c7b1597be0be",
+      "creator_id": "m5-clearly_ai",
+      "guess": "ai",
+      "label": "This text has a lot in common with writing produced by AI tools, so we think it may not have been written by a person. This is an automatic guess and it can be wrong \u2014 clear, simple writing is sometimes mistaken for AI. If you wrote this yourself, you can ask a person to review it using the content ID shown with this result.",
+      "model_score": 0.8803,
+      "status": "decided",
+      "style_score": 0.9111,
+      "timestamp": "2026-11-02T23:40:55+00:00"
+    },
+    {
+      "combined_score": 0.2016,
+      "content_id": "a322b4c2-10f3-4246-aa1c-34257ef10b48",
+      "creator_id": "m5-clearly_human",
+      "guess": "human",
+      "label": "We think this was probably written by a person.",
+      "model_score": 0.3355,
+      "status": "decided",
+      "style_score": 0.0676,
+      "timestamp": "2026-11-02T23:40:55+00:00"
+    },
+    {
+      "combined_score": 0.6805,
+      "content_id": "079a641f-30f6-481e-a400-501b184616ce",
+      "creator_id": "m5-edited_ai",
+      "guess": "unsure",
+      "label": "We can't tell whether this was written by a person or with an AI tool. That happens a lot, and it isn't a judgement about you or your work. If you wrote it yourself, you don't need to do anything \u2014 but if you'd like a person to look at it, you can ask for a review using the content ID shown with this result.",
+      "model_score": 0.7121,
+      "status": "decided",
+      "style_score": 0.649,
+      "timestamp": "2026-11-02T23:40:55+00:00"
+    },
+    {
+      "combined_score": 0.8589,
+      "content_id": "f4b4b712-20e8-4f3a-9295-a43859f5efeb",
+      "creator_id": "writer-42",
+      "guess": "ai",
+      "label": "This text has a lot in common with writing produced by AI tools, so we think it may not have been written by a person. This is an automatic guess and it can be wrong \u2014 clear, simple writing is sometimes mistaken for AI. If you wrote this yourself, you can ask a person to review it using the content ID shown with this result.",
+      "model_score": 0.8958,
+      "status": "decided",
+      "style_score": 0.822,
+      "timestamp": "2026-11-02T23:40:55+00:00"
+    },
+    {
+      "content_id": "f4b4b712-20e8-4f3a-9295-a43859f5efeb",
+      "creator_id": "writer-42",
+      "event": "appeal",
+      "reasoning": "I wrote this myself about my first two years here. English is my second language, so I keep my sentences simple on purpose.",
+      "status": "under_review",
+      "timestamp": "2026-11-02T23:41:04+00:00"
+    },
+    {
+      "content_id": "f4b4b712-20e8-4f3a-9295-a43859f5efeb",
+      "creator_id": "unknown",
+      "event": "rejected",
+      "reason": "already_under_review",
+      "status": "rejected",
+      "timestamp": "2026-11-02T23:41:04+00:00"
+    },
+    {
+      "content_id": "f4b4b712-typo",
+      "creator_id": "unknown",
+      "event": "rejected",
+      "reason": "unknown_content_id",
+      "status": "rejected",
+      "timestamp": "2026-11-02T23:41:04+00:00"
+    },
+    {
+      "content_id": null,
+      "creator_id": "unknown",
+      "event": "rejected",
+      "reason": "missing_reasoning",
+      "status": "rejected",
+      "timestamp": "2026-11-02T23:41:04+00:00"
+    },
+    {
+      "creator_id": "flood_tester",
+      "event": "rejected",
+      "reason": "text_too_short",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:09:16+00:00"
+    },
+    {
+      "creator_id": "flood_tester",
+      "event": "rejected",
+      "limit": "1 per 1 minute",
+      "reason": "rate_limited",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:09:16+00:00"
+    },
+    {
+      "creator_id": "flood_tester",
+      "event": "rejected",
+      "limit": "1 per 1 minute",
+      "reason": "rate_limited",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:09:16+00:00"
+    },
+    {
+      "creator_id": "flood_tester",
+      "event": "rejected",
+      "limit": "1 per 1 minute",
+      "reason": "rate_limited",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:09:16+00:00"
+    },
+    {
+      "creator_id": "flood_tester",
+      "event": "rejected",
+      "limit": "1 per 1 minute",
+      "reason": "rate_limited",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:09:16+00:00"
+    },
+    {
+      "creator_id": "flood_tester",
+      "event": "rejected",
+      "limit": "1 per 1 minute",
+      "reason": "rate_limited",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:09:16+00:00"
+    },
+    {
+      "creator_id": "flood_tester",
+      "event": "rejected",
+      "limit": "1 per 1 minute",
+      "reason": "rate_limited",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:09:16+00:00"
+    },
+    {
+      "creator_id": "flood_tester",
+      "event": "rejected",
+      "limit": "1 per 1 minute",
+      "reason": "rate_limited",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:09:16+00:00"
+    },
+    {
+      "creator_id": "flood_tester",
+      "event": "rejected",
+      "limit": "1 per 1 minute",
+      "reason": "rate_limited",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:09:16+00:00"
+    },
+    {
+      "creator_id": "flood_tester",
+      "event": "rejected",
+      "limit": "1 per 1 minute",
+      "reason": "rate_limited",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:09:16+00:00"
+    },
+    {
+      "creator_id": "flood_tester",
+      "event": "rejected",
+      "limit": "1 per 1 minute",
+      "reason": "rate_limited",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:09:16+00:00"
+    },
+    {
+      "creator_id": "flood_tester",
+      "event": "rejected",
+      "limit": "1 per 1 minute",
+      "reason": "rate_limited",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:09:16+00:00"
+    },
+    {
+      "creator_id": "flood_tester",
+      "event": "rejected",
+      "limit": "1 per 1 minute",
+      "reason": "rate_limited",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:09:16+00:00"
+    },
+    {
+      "creator_id": "flood_tester",
+      "event": "rejected",
+      "limit": "1 per 1 minute",
+      "reason": "rate_limited",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:09:16+00:00"
+    },
+    {
+      "creator_id": "flood_tester",
+      "event": "rejected",
+      "limit": "1 per 1 minute",
+      "reason": "rate_limited",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:09:16+00:00"
+    },
+    {
+      "creator_id": "flood_tester",
+      "event": "rejected",
+      "reason": "text_too_short",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:10:01+00:00"
+    },
+    {
+      "creator_id": "flood_tester",
+      "event": "rejected",
+      "reason": "text_too_short",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:10:01+00:00"
+    },
+    {
+      "creator_id": "flood_tester",
+      "event": "rejected",
+      "reason": "text_too_short",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:10:01+00:00"
+    },
+    {
+      "creator_id": "flood_tester",
+      "event": "rejected",
+      "reason": "text_too_short",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:10:01+00:00"
+    },
+    {
+      "creator_id": "flood_tester",
+      "event": "rejected",
+      "reason": "text_too_short",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:10:01+00:00"
+    },
+    {
+      "creator_id": "flood_tester",
+      "event": "rejected",
+      "limit": "5 per 1 minute",
+      "reason": "rate_limited",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:10:01+00:00"
+    },
+    {
+      "creator_id": "flood_tester",
+      "event": "rejected",
+      "limit": "5 per 1 minute",
+      "reason": "rate_limited",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:10:01+00:00"
+    },
+    {
+      "creator_id": "flood_tester",
+      "event": "rejected",
+      "limit": "5 per 1 minute",
+      "reason": "rate_limited",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:10:01+00:00"
+    },
+    {
+      "creator_id": "flood_tester",
+      "event": "rejected",
+      "limit": "5 per 1 minute",
+      "reason": "rate_limited",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:10:01+00:00"
+    },
+    {
+      "creator_id": "flood_tester",
+      "event": "rejected",
+      "limit": "5 per 1 minute",
+      "reason": "rate_limited",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:10:01+00:00"
+    },
+    {
+      "creator_id": "flood_tester",
+      "event": "rejected",
+      "limit": "5 per 1 minute",
+      "reason": "rate_limited",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:10:01+00:00"
+    },
+    {
+      "creator_id": "flood_tester",
+      "event": "rejected",
+      "limit": "5 per 1 minute",
+      "reason": "rate_limited",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:10:01+00:00"
+    },
+    {
+      "creator_id": "flood_tester",
+      "event": "rejected",
+      "limit": "5 per 1 minute",
+      "reason": "rate_limited",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:10:01+00:00"
+    },
+    {
+      "creator_id": "flood_tester",
+      "event": "rejected",
+      "limit": "5 per 1 minute",
+      "reason": "rate_limited",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:10:01+00:00"
+    },
+    {
+      "creator_id": "flood_tester",
+      "event": "rejected",
+      "limit": "5 per 1 minute",
+      "reason": "rate_limited",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:10:01+00:00"
+    },
+    {
+      "combined_score": 0.6805,
+      "confidence": 0.6805,
+      "content_id": "7fd6977e-4b83-4531-8b78-fac84ea33714",
+      "creator_id": "audit-check",
+      "guess": "unsure",
+      "label": "We can't tell whether this was written by a person or with an AI tool. That happens a lot, and it isn't a judgement about you or your work. If you wrote it yourself, you don't need to do anything \u2014 but if you'd like a person to look at it, you can ask for a review using the content ID shown with this result.",
+      "model_score": 0.7121,
+      "rule": {
+        "agreement_floor": 0.6,
+        "ai_threshold": 0.75,
+        "human_threshold": 0.35,
+        "weight_model": 0.5,
+        "weight_style": 0.5
+      },
+      "status": "decided",
+      "style_score": 0.649,
+      "text_sha256": "a07a513d331c214cd8a17df7eaec7245a47d567d8ae353876c5864fc86ff4aaf",
+      "timestamp": "2026-11-05T00:10:56+00:00",
+      "truncated": false,
+      "word_count": 52
+    },
+    {
+      "combined_score": 0.8957,
+      "confidence": 0.8957,
+      "content_id": "f55cbadd-07fb-4913-bd74-1ee3fd657360",
+      "creator_id": "log-check",
+      "guess": "ai",
+      "label": "This text has a lot in common with writing produced by AI tools, so we think it may not have been written by a person. This is an automatic guess and it can be wrong \u2014 clear, simple writing is sometimes mistaken for AI. If you wrote this yourself, you can ask a person to review it using the content ID shown with this result.",
+      "model_score": 0.8803,
+      "rule": {
+        "agreement_floor": 0.6,
+        "ai_threshold": 0.75,
+        "human_threshold": 0.35,
+        "weight_model": 0.5,
+        "weight_style": 0.5
+      },
+      "status": "decided",
+      "style_score": 0.9111,
+      "text_sha256": "229d9b4bd56f5ebc120b8aeceb57eb4b857b8e2284dba961c3a7c982a4f3cbdf",
+      "timestamp": "2026-11-05T00:14:53+00:00",
+      "truncated": false,
+      "word_count": 75
+    },
+    {
+      "combined_score": 0.2016,
+      "confidence": 0.7984,
+      "content_id": "6da1e393-7407-4743-938e-8ecf1080d490",
+      "creator_id": "log-check",
+      "guess": "human",
+      "label": "We think this was probably written by a person.",
+      "model_score": 0.3355,
+      "rule": {
+        "agreement_floor": 0.6,
+        "ai_threshold": 0.75,
+        "human_threshold": 0.35,
+        "weight_model": 0.5,
+        "weight_style": 0.5
+      },
+      "status": "decided",
+      "style_score": 0.0676,
+      "text_sha256": "c31776a9a29d295f3c8dde7a61f9a5f733fb3bf519360b2b4a2f0e81926a9b93",
+      "timestamp": "2026-11-05T00:14:53+00:00",
+      "truncated": false,
+      "word_count": 76
+    },
+    {
+      "combined_score": 0.2686,
+      "confidence": 0.7314,
+      "content_id": "e2b48a3c-6104-4343-a9c7-b278f0179b75",
+      "creator_id": "log-check",
+      "guess": "human",
+      "label": "We think this was probably written by a person.",
+      "model_score": 0.4871,
+      "rule": {
+        "agreement_floor": 0.6,
+        "ai_threshold": 0.75,
+        "human_threshold": 0.35,
+        "weight_model": 0.5,
+        "weight_style": 0.5
+      },
+      "status": "decided",
+      "style_score": 0.05,
+      "text_sha256": "3089fca640b7889db552ec564b7df18b3c8bb2394494f380ff7429291894713b",
+      "timestamp": "2026-11-05T00:14:53+00:00",
+      "truncated": false,
+      "word_count": 65
+    },
+    {
+      "creator_id": "log-check",
+      "event": "rejected",
+      "reason": "missing_text",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:14:53+00:00"
+    },
+    {
+      "creator_id": "log-check",
+      "event": "rejected",
+      "reason": "text_too_short",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:14:53+00:00"
+    },
+    {
+      "creator_id": "log-check",
+      "event": "rejected",
+      "limit": "5 per 1 minute",
+      "reason": "rate_limited",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:14:53+00:00"
+    },
+    {
+      "combined_score": 0.4151,
+      "confidence": 0.5849,
+      "content_id": "493acfb4-44a8-4125-8679-1b557c738eca",
+      "creator_id": "attacker_EV01",
+      "guess": "unsure",
+      "label": "We can't tell whether this was written by a person or with an AI tool. That happens a lot, and it isn't a judgement about you or your work. If you wrote it yourself, you don't need to do anything \u2014 but if you'd like a person to look at it, you can ask for a review using the content ID shown with this result.",
+      "model_score": 0.1635,
+      "rule": {
+        "agreement_floor": 0.6,
+        "ai_threshold": 0.75,
+        "human_threshold": 0.35,
+        "weight_model": 0.5,
+        "weight_style": 0.5
+      },
+      "status": "decided",
+      "style_score": 0.6667,
+      "text_sha256": "c9c118b0916bad8afd0a8c469d4c1e2e566af634c9a3632121921d1d5835236b",
+      "timestamp": "2026-11-05T00:34:03+00:00",
+      "truncated": false,
+      "word_count": 84
+    },
+    {
+      "combined_score": 0.3603,
+      "confidence": 0.6397,
+      "content_id": "c83c9e40-2918-437b-9c53-721dbb7e9a57",
+      "creator_id": "attacker_EV02",
+      "guess": "unsure",
+      "label": "We can't tell whether this was written by a person or with an AI tool. That happens a lot, and it isn't a judgement about you or your work. If you wrote it yourself, you don't need to do anything \u2014 but if you'd like a person to look at it, you can ask for a review using the content ID shown with this result.",
+      "model_score": 0.5943,
+      "rule": {
+        "agreement_floor": 0.6,
+        "ai_threshold": 0.75,
+        "human_threshold": 0.35,
+        "weight_model": 0.5,
+        "weight_style": 0.5
+      },
+      "status": "decided",
+      "style_score": 0.1262,
+      "text_sha256": "01a49e56a1fcfe5d03f1a47a3ed8d33f767021ddd50b4f00f1939c2c3cfa523a",
+      "timestamp": "2026-11-05T00:34:03+00:00",
+      "truncated": false,
+      "word_count": 93
+    },
+    {
+      "combined_score": 0.5224,
+      "confidence": 0.5224,
+      "content_id": "6bbe8387-01bb-4094-ab7f-48bac65d6069",
+      "creator_id": "attacker_EV03",
+      "guess": "unsure",
+      "label": "We can't tell whether this was written by a person or with an AI tool. That happens a lot, and it isn't a judgement about you or your work. If you wrote it yourself, you don't need to do anything \u2014 but if you'd like a person to look at it, you can ask for a review using the content ID shown with this result.",
+      "model_score": 0.6662,
+      "rule": {
+        "agreement_floor": 0.6,
+        "ai_threshold": 0.75,
+        "human_threshold": 0.35,
+        "weight_model": 0.5,
+        "weight_style": 0.5
+      },
+      "status": "decided",
+      "style_score": 0.3786,
+      "text_sha256": "d34889fd0f2aa5eccb3e97835793e202edae776cc1b2a6ec85a79b57b332e490",
+      "timestamp": "2026-11-05T00:34:03+00:00",
+      "truncated": false,
+      "word_count": 105
+    },
+    {
+      "combined_score": 0.6391,
+      "confidence": 0.6391,
+      "content_id": "29b70753-f38f-4df9-8061-68303f5cc50d",
+      "creator_id": "attacker_EV04",
+      "guess": "unsure",
+      "label": "We can't tell whether this was written by a person or with an AI tool. That happens a lot, and it isn't a judgement about you or your work. If you wrote it yourself, you don't need to do anything \u2014 but if you'd like a person to look at it, you can ask for a review using the content ID shown with this result.",
+      "model_score": 0.6114,
+      "rule": {
+        "agreement_floor": 0.6,
+        "ai_threshold": 0.75,
+        "human_threshold": 0.35,
+        "weight_model": 0.5,
+        "weight_style": 0.5
+      },
+      "status": "decided",
+      "style_score": 0.6667,
+      "text_sha256": "1e45b7c713861cb997f73abaf05ecbb36031673a3e2ca54debffab2d676dee67",
+      "timestamp": "2026-11-05T00:34:03+00:00",
+      "truncated": false,
+      "word_count": 84
+    },
+    {
+      "combined_score": 0.3399,
+      "confidence": 0.6601,
+      "content_id": "76268500-ab36-4d27-be9c-8b7cada66e40",
+      "creator_id": "attacker_EV05",
+      "guess": "human",
+      "label": "We think this was probably written by a person.",
+      "model_score": 0.3212,
+      "rule": {
+        "agreement_floor": 0.6,
+        "ai_threshold": 0.75,
+        "human_threshold": 0.35,
+        "weight_model": 0.5,
+        "weight_style": 0.5
+      },
+      "status": "decided",
+      "style_score": 0.3587,
+      "text_sha256": "a20f4a78c4a56779b7954a3c8a3d23379d39e2cfd71e7aa1d6bb687be407f3f5",
+      "timestamp": "2026-11-05T00:34:03+00:00",
+      "truncated": false,
+      "word_count": 81
+    },
+    {
+      "combined_score": 0.5099,
+      "confidence": 0.5099,
+      "content_id": "53f5622b-53fe-4688-baf7-c5f4c7809a01",
+      "creator_id": "attacker_EV06",
+      "guess": "unsure",
+      "label": "We can't tell whether this was written by a person or with an AI tool. That happens a lot, and it isn't a judgement about you or your work. If you wrote it yourself, you don't need to do anything \u2014 but if you'd like a person to look at it, you can ask for a review using the content ID shown with this result.",
+      "model_score": 0.5727,
+      "rule": {
+        "agreement_floor": 0.6,
+        "ai_threshold": 0.75,
+        "human_threshold": 0.35,
+        "weight_model": 0.5,
+        "weight_style": 0.5
+      },
+      "status": "decided",
+      "style_score": 0.4471,
+      "text_sha256": "a8a2b35650fd82c884e1c470772b0a344c12a5bf41366aebc837293db6bf08f3",
+      "timestamp": "2026-11-05T00:34:03+00:00",
+      "truncated": false,
+      "word_count": 92
+    },
+    {
+      "combined_score": 0.4371,
+      "confidence": 0.5629,
+      "content_id": "f0629d22-e1d5-4bc9-a377-7b0b1f97b8ca",
+      "creator_id": "attacker_EV07",
+      "guess": "unsure",
+      "label": "We can't tell whether this was written by a person or with an AI tool. That happens a lot, and it isn't a judgement about you or your work. If you wrote it yourself, you don't need to do anything \u2014 but if you'd like a person to look at it, you can ask for a review using the content ID shown with this result.",
+      "model_score": 0.5862,
+      "rule": {
+        "agreement_floor": 0.6,
+        "ai_threshold": 0.75,
+        "human_threshold": 0.35,
+        "weight_model": 0.5,
+        "weight_style": 0.5
+      },
+      "status": "decided",
+      "style_score": 0.288,
+      "text_sha256": "afdf10b12dff821abe6a67bfa011d5d067efc5860377ec27c17c394ca0314d32",
+      "timestamp": "2026-11-05T00:34:03+00:00",
+      "truncated": false,
+      "word_count": 97
+    },
+    {
+      "creator_id": "attacker_EV08",
+      "event": "rejected",
+      "reason": "text_too_short",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:34:03+00:00"
+    },
+    {
+      "combined_score": 0.5963,
+      "confidence": 0.5963,
+      "content_id": "d6b2b173-d058-42a2-97b5-5505c03b8641",
+      "creator_id": "attacker_EV09",
+      "guess": "unsure",
+      "label": "We can't tell whether this was written by a person or with an AI tool. That happens a lot, and it isn't a judgement about you or your work. If you wrote it yourself, you don't need to do anything \u2014 but if you'd like a person to look at it, you can ask for a review using the content ID shown with this result.",
+      "model_score": 0.7042,
+      "rule": {
+        "agreement_floor": 0.6,
+        "ai_threshold": 0.75,
+        "human_threshold": 0.35,
+        "weight_model": 0.5,
+        "weight_style": 0.5
+      },
+      "status": "decided",
+      "style_score": 0.4883,
+      "text_sha256": "6a1df5493d488bb6ecf34ad402e25dd37bdb9eab8b4d15ada43d500d6ffde81e",
+      "timestamp": "2026-11-05T00:34:03+00:00",
+      "truncated": false,
+      "word_count": 110
+    },
+    {
+      "combined_score": 0.9249,
+      "confidence": 0.9249,
+      "content_id": "0a880a7d-7d68-4518-90ad-5f43432c7b80",
+      "creator_id": "attacker_EV10",
+      "guess": "ai",
+      "label": "This text has a lot in common with writing produced by AI tools, so we think it may not have been written by a person. This is an automatic guess and it can be wrong \u2014 clear, simple writing is sometimes mistaken for AI. If you wrote this yourself, you can ask a person to review it using the content ID shown with this result.",
+      "model_score": 0.9792,
+      "rule": {
+        "agreement_floor": 0.6,
+        "ai_threshold": 0.75,
+        "human_threshold": 0.35,
+        "weight_model": 0.5,
+        "weight_style": 0.5
+      },
+      "status": "decided",
+      "style_score": 0.8707,
+      "text_sha256": "efb8495d3ad8bc7ff6b565627c1013b0cfc82377763f33cff4cc330d89369fb1",
+      "timestamp": "2026-11-05T00:34:03+00:00",
+      "truncated": false,
+      "word_count": 78
+    },
+    {
+      "combined_score": 0.6603,
+      "confidence": 0.6603,
+      "content_id": "c24aea57-e6e0-4f77-a656-beb657412b36",
+      "creator_id": "attacker_FP01",
+      "guess": "unsure",
+      "label": "We can't tell whether this was written by a person or with an AI tool. That happens a lot, and it isn't a judgement about you or your work. If you wrote it yourself, you don't need to do anything \u2014 but if you'd like a person to look at it, you can ask for a review using the content ID shown with this result.",
+      "model_score": 0.6175,
+      "rule": {
+        "agreement_floor": 0.6,
+        "ai_threshold": 0.75,
+        "human_threshold": 0.35,
+        "weight_model": 0.5,
+        "weight_style": 0.5
+      },
+      "status": "decided",
+      "style_score": 0.7032,
+      "text_sha256": "dbb48651b55feaf119424d674060b0c5872dd67a91d145bf8272412bfdafca8e",
+      "timestamp": "2026-11-05T00:34:03+00:00",
+      "truncated": false,
+      "word_count": 103
+    },
+    {
+      "combined_score": 0.8341,
+      "confidence": 0.8341,
+      "content_id": "9de7f64c-b5a2-493e-9be1-ab334f49c277",
+      "creator_id": "attacker_FP02",
+      "guess": "ai",
+      "label": "This text has a lot in common with writing produced by AI tools, so we think it may not have been written by a person. This is an automatic guess and it can be wrong \u2014 clear, simple writing is sometimes mistaken for AI. If you wrote this yourself, you can ask a person to review it using the content ID shown with this result.",
+      "model_score": 0.7387,
+      "rule": {
+        "agreement_floor": 0.6,
+        "ai_threshold": 0.75,
+        "human_threshold": 0.35,
+        "weight_model": 0.5,
+        "weight_style": 0.5
+      },
+      "status": "decided",
+      "style_score": 0.9296,
+      "text_sha256": "631b8f514858e6565b1b9c6cd26b881a805685dd7cacb69bfc7d465c9e9c1874",
+      "timestamp": "2026-11-05T00:34:03+00:00",
+      "truncated": false,
+      "word_count": 76
+    },
+    {
+      "combined_score": 0.7827,
+      "confidence": 0.7827,
+      "content_id": "f6b443be-186a-47ab-936a-eb44f1f6cc24",
+      "creator_id": "attacker_FP03",
+      "guess": "ai",
+      "label": "This text has a lot in common with writing produced by AI tools, so we think it may not have been written by a person. This is an automatic guess and it can be wrong \u2014 clear, simple writing is sometimes mistaken for AI. If you wrote this yourself, you can ask a person to review it using the content ID shown with this result.",
+      "model_score": 0.8051,
+      "rule": {
+        "agreement_floor": 0.6,
+        "ai_threshold": 0.75,
+        "human_threshold": 0.35,
+        "weight_model": 0.5,
+        "weight_style": 0.5
+      },
+      "status": "decided",
+      "style_score": 0.7603,
+      "text_sha256": "f876400f145c0cbc5c16df96a83f6229e8c50624fc35965309d7af61e78eb591",
+      "timestamp": "2026-11-05T00:34:03+00:00",
+      "truncated": false,
+      "word_count": 83
+    },
+    {
+      "combined_score": 0.7819,
+      "confidence": 0.7819,
+      "content_id": "29af42e0-23de-475e-8cfd-27bd2d0d9a41",
+      "creator_id": "attacker_FP04",
+      "guess": "ai",
+      "label": "This text has a lot in common with writing produced by AI tools, so we think it may not have been written by a person. This is an automatic guess and it can be wrong \u2014 clear, simple writing is sometimes mistaken for AI. If you wrote this yourself, you can ask a person to review it using the content ID shown with this result.",
+      "model_score": 0.8329,
+      "rule": {
+        "agreement_floor": 0.6,
+        "ai_threshold": 0.75,
+        "human_threshold": 0.35,
+        "weight_model": 0.5,
+        "weight_style": 0.5
+      },
+      "status": "decided",
+      "style_score": 0.7309,
+      "text_sha256": "162aae833f8571409f955d9059b6d728321181c59a311244434f9bd9c12c05bf",
+      "timestamp": "2026-11-05T00:34:04+00:00",
+      "truncated": false,
+      "word_count": 68
+    },
+    {
+      "combined_score": 0.8746,
+      "confidence": 0.8746,
+      "content_id": "6d7f4d8c-5ef7-4bdb-ad9b-8e0fb680431b",
+      "creator_id": "attacker_FP05",
+      "guess": "ai",
+      "label": "This text has a lot in common with writing produced by AI tools, so we think it may not have been written by a person. This is an automatic guess and it can be wrong \u2014 clear, simple writing is sometimes mistaken for AI. If you wrote this yourself, you can ask a person to review it using the content ID shown with this result.",
+      "model_score": 0.8005,
+      "rule": {
+        "agreement_floor": 0.6,
+        "ai_threshold": 0.75,
+        "human_threshold": 0.35,
+        "weight_model": 0.5,
+        "weight_style": 0.5
+      },
+      "status": "decided",
+      "style_score": 0.9487,
+      "text_sha256": "7545ded553421ccf87614ff03476af3a7201673a13c9b2fbeda5fb6865b6253d",
+      "timestamp": "2026-11-05T00:34:04+00:00",
+      "truncated": false,
+      "word_count": 70
+    },
+    {
+      "combined_score": 0.8276,
+      "confidence": 0.8276,
+      "content_id": "26411c0e-b26e-45a0-b7b8-c598704ea5fc",
+      "creator_id": "attacker_FP06",
+      "guess": "ai",
+      "label": "This text has a lot in common with writing produced by AI tools, so we think it may not have been written by a person. This is an automatic guess and it can be wrong \u2014 clear, simple writing is sometimes mistaken for AI. If you wrote this yourself, you can ask a person to review it using the content ID shown with this result.",
+      "model_score": 0.8814,
+      "rule": {
+        "agreement_floor": 0.6,
+        "ai_threshold": 0.75,
+        "human_threshold": 0.35,
+        "weight_model": 0.5,
+        "weight_style": 0.5
+      },
+      "status": "decided",
+      "style_score": 0.7739,
+      "text_sha256": "d9c37cd0f1a30d9411abe7a40ecfb2d59506c078f27ffe2d0f309fbb68a750d5",
+      "timestamp": "2026-11-05T00:34:04+00:00",
+      "truncated": false,
+      "word_count": 64
+    },
+    {
+      "combined_score": 0.7742,
+      "confidence": 0.7742,
+      "content_id": "71c255e3-7d56-4f71-b9a5-dbcb5ad58d51",
+      "creator_id": "attacker_FP07",
+      "guess": "ai",
+      "label": "This text has a lot in common with writing produced by AI tools, so we think it may not have been written by a person. This is an automatic guess and it can be wrong \u2014 clear, simple writing is sometimes mistaken for AI. If you wrote this yourself, you can ask a person to review it using the content ID shown with this result.",
+      "model_score": 0.8816,
+      "rule": {
+        "agreement_floor": 0.6,
+        "ai_threshold": 0.75,
+        "human_threshold": 0.35,
+        "weight_model": 0.5,
+        "weight_style": 0.5
+      },
+      "status": "decided",
+      "style_score": 0.6667,
+      "text_sha256": "73509863f15b33de726aff73dada059e1ce22d201f4b758fb1fb99736b8be0f5",
+      "timestamp": "2026-11-05T00:34:04+00:00",
+      "truncated": false,
+      "word_count": 59
+    },
+    {
+      "creator_id": "attacker_FP08",
+      "event": "rejected",
+      "reason": "text_too_short",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:34:04+00:00"
+    },
+    {
+      "combined_score": 0.4103,
+      "confidence": 0.5897,
+      "content_id": "ae074e53-d83a-4a38-802b-dbcb8664b773",
+      "creator_id": "attacker_PI01",
+      "guess": "unsure",
+      "label": "We can't tell whether this was written by a person or with an AI tool. That happens a lot, and it isn't a judgement about you or your work. If you wrote it yourself, you don't need to do anything \u2014 but if you'd like a person to look at it, you can ask for a review using the content ID shown with this result.",
+      "model_score": 0.4625,
+      "rule": {
+        "agreement_floor": 0.6,
+        "ai_threshold": 0.75,
+        "human_threshold": 0.35,
+        "weight_model": 0.5,
+        "weight_style": 0.5
+      },
+      "status": "decided",
+      "style_score": 0.3582,
+      "text_sha256": "278b6c54c3b40c687ede64907ae2a5c1490f1c0289a80d001a9379038763fc5d",
+      "timestamp": "2026-11-05T00:34:04+00:00",
+      "truncated": false,
+      "word_count": 45
+    },
+    {
+      "combined_score": 0.2108,
+      "confidence": 0.7892,
+      "content_id": "2f491da0-5967-4121-aab3-82039f309fa6",
+      "creator_id": "attacker_PI02",
+      "guess": "human",
+      "label": "We think this was probably written by a person.",
+      "model_score": 0.2044,
+      "rule": {
+        "agreement_floor": 0.6,
+        "ai_threshold": 0.75,
+        "human_threshold": 0.35,
+        "weight_model": 0.5,
+        "weight_style": 0.5
+      },
+      "status": "decided",
+      "style_score": 0.2173,
+      "text_sha256": "61f8f3b0b0b9bcae0f3558ded6225d5fbed5ac3d5d76d004a5ddf4bd9dfb18df",
+      "timestamp": "2026-11-05T00:34:04+00:00",
+      "truncated": false,
+      "word_count": 42
+    },
+    {
+      "combined_score": 0.4161,
+      "confidence": 0.5839,
+      "content_id": "0465d02d-18af-44d7-af54-1bf134b08bc9",
+      "creator_id": "attacker_PI03",
+      "guess": "unsure",
+      "label": "We can't tell whether this was written by a person or with an AI tool. That happens a lot, and it isn't a judgement about you or your work. If you wrote it yourself, you don't need to do anything \u2014 but if you'd like a person to look at it, you can ask for a review using the content ID shown with this result.",
+      "model_score": 0.5943,
+      "rule": {
+        "agreement_floor": 0.6,
+        "ai_threshold": 0.75,
+        "human_threshold": 0.35,
+        "weight_model": 0.5,
+        "weight_style": 0.5
+      },
+      "status": "decided",
+      "style_score": 0.2379,
+      "text_sha256": "dbd7c9d28f4cc75f6875df7b2dd41dad80ea9110e230ae167ec675bac487f9c7",
+      "timestamp": "2026-11-05T00:34:04+00:00",
+      "truncated": false,
+      "word_count": 55
+    },
+    {
+      "combined_score": 0.4314,
+      "confidence": 0.5686,
+      "content_id": "1748bc13-e98a-4406-b294-f3f28c8f4548",
+      "creator_id": "attacker_PI04",
+      "guess": "unsure",
+      "label": "We can't tell whether this was written by a person or with an AI tool. That happens a lot, and it isn't a judgement about you or your work. If you wrote it yourself, you don't need to do anything \u2014 but if you'd like a person to look at it, you can ask for a review using the content ID shown with this result.",
+      "model_score": 0.4998,
+      "rule": {
+        "agreement_floor": 0.6,
+        "ai_threshold": 0.75,
+        "human_threshold": 0.35,
+        "weight_model": 0.5,
+        "weight_style": 0.5
+      },
+      "status": "decided",
+      "style_score": 0.363,
+      "text_sha256": "8086136d7d2b4a02accab1dcc392942568c5fd8d8f0204aef670a9df52f7b6ec",
+      "timestamp": "2026-11-05T00:34:04+00:00",
+      "truncated": false,
+      "word_count": 47
+    },
+    {
+      "creator_id": "attacker_PI05",
+      "event": "rejected",
+      "reason": "text_too_short",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:34:04+00:00"
+    },
+    {
+      "combined_score": 0.6279,
+      "confidence": 0.6279,
+      "content_id": "90f32d8b-4383-4ba6-a38e-00f03dee1453",
+      "creator_id": "attacker_PI06",
+      "guess": "unsure",
+      "label": "We can't tell whether this was written by a person or with an AI tool. That happens a lot, and it isn't a judgement about you or your work. If you wrote it yourself, you don't need to do anything \u2014 but if you'd like a person to look at it, you can ask for a review using the content ID shown with this result.",
+      "model_score": 0.5583,
+      "rule": {
+        "agreement_floor": 0.6,
+        "ai_threshold": 0.75,
+        "human_threshold": 0.35,
+        "weight_model": 0.5,
+        "weight_style": 0.5
+      },
+      "status": "decided",
+      "style_score": 0.6975,
+      "text_sha256": "875739ecec5ce0c02112c31ca44f1ff713c71774bb9d77d8d5e53006962af258",
+      "timestamp": "2026-11-05T00:34:04+00:00",
+      "truncated": false,
+      "word_count": 113
+    },
+    {
+      "creator_id": "attacker_MF01",
+      "event": "rejected",
+      "reason": "text_too_short",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:34:04+00:00"
+    },
+    {
+      "creator_id": "attacker_MF02",
+      "event": "rejected",
+      "reason": "text_too_short",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:34:04+00:00"
+    },
+    {
+      "creator_id": "attacker_MF03",
+      "event": "rejected",
+      "reason": "text_too_short",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:34:04+00:00"
+    },
+    {
+      "creator_id": "attacker_MF04",
+      "event": "rejected",
+      "reason": "text_too_short",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:34:04+00:00"
+    },
+    {
+      "creator_id": "attacker_MF05",
+      "event": "rejected",
+      "reason": "text_too_short",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:34:04+00:00"
+    },
+    {
+      "creator_id": "attacker_MF06",
+      "event": "rejected",
+      "reason": "text_too_short",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:34:04+00:00"
+    },
+    {
+      "creator_id": "attacker_MF07",
+      "event": "rejected",
+      "reason": "text_too_short",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:34:04+00:00"
+    },
+    {
+      "creator_id": "attacker_MF08",
+      "event": "rejected",
+      "reason": "text_too_long",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:34:04+00:00"
+    },
+    {
+      "creator_id": "attacker_RQ01",
+      "event": "rejected",
+      "reason": "missing_text",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:34:04+00:00"
+    },
+    {
+      "creator_id": "unknown",
+      "event": "rejected",
+      "reason": "text_too_short",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:34:04+00:00"
+    },
+    {
+      "creator_id": "attacker_RQ03",
+      "event": "rejected",
+      "reason": "missing_text",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:34:04+00:00"
+    },
+    {
+      "creator_id": "attacker_RQ04",
+      "event": "rejected",
+      "reason": "missing_text",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:34:04+00:00"
+    },
+    {
+      "creator_id": "attacker_RQ05",
+      "event": "rejected",
+      "reason": "missing_text",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:34:04+00:00"
+    },
+    {
+      "creator_id": "unknown",
+      "event": "rejected",
+      "reason": "text_too_short",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:34:04+00:00"
+    },
+    {
+      "creator_id": "unknown",
+      "event": "rejected",
+      "reason": "invalid_json",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:34:04+00:00"
+    },
+    {
+      "creator_id": "unknown",
+      "event": "rejected",
+      "reason": "invalid_json",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:34:04+00:00"
+    },
+    {
+      "creator_id": "unknown",
+      "event": "rejected",
+      "reason": "invalid_json",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:34:04+00:00"
+    },
+    {
+      "creator_id": "unknown",
+      "event": "rejected",
+      "limit": "5 per 1 minute",
+      "reason": "rate_limited",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:34:04+00:00"
+    },
+    {
+      "creator_id": "unknown",
+      "event": "rejected",
+      "limit": "5 per 1 minute",
+      "reason": "rate_limited",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:34:04+00:00"
+    },
+    {
+      "creator_id": "attacker_RQ12",
+      "event": "rejected",
+      "reason": "missing_text",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:34:04+00:00"
+    },
+    {
+      "creator_id": "attacker_flood",
+      "event": "rejected",
+      "reason": "text_too_short",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:34:04+00:00"
+    },
+    {
+      "creator_id": "attacker_flood",
+      "event": "rejected",
+      "reason": "text_too_short",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:34:04+00:00"
+    },
+    {
+      "creator_id": "attacker_flood",
+      "event": "rejected",
+      "reason": "text_too_short",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:34:04+00:00"
+    },
+    {
+      "creator_id": "attacker_flood",
+      "event": "rejected",
+      "reason": "text_too_short",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:34:04+00:00"
+    },
+    {
+      "creator_id": "attacker_flood",
+      "event": "rejected",
+      "reason": "text_too_short",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:34:04+00:00"
+    },
+    {
+      "creator_id": "attacker_flood",
+      "event": "rejected",
+      "limit": "5 per 1 minute",
+      "reason": "rate_limited",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:34:04+00:00"
+    },
+    {
+      "creator_id": "attacker_flood",
+      "event": "rejected",
+      "limit": "5 per 1 minute",
+      "reason": "rate_limited",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:34:04+00:00"
+    },
+    {
+      "creator_id": "attacker_flood",
+      "event": "rejected",
+      "limit": "5 per 1 minute",
+      "reason": "rate_limited",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:34:04+00:00"
+    },
+    {
+      "creator_id": "attacker_flood",
+      "event": "rejected",
+      "limit": "5 per 1 minute",
+      "reason": "rate_limited",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:34:04+00:00"
+    },
+    {
+      "creator_id": "attacker_flood",
+      "event": "rejected",
+      "limit": "5 per 1 minute",
+      "reason": "rate_limited",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:34:04+00:00"
+    },
+    {
+      "creator_id": "attacker_flood",
+      "event": "rejected",
+      "limit": "5 per 1 minute",
+      "reason": "rate_limited",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:34:04+00:00"
+    },
+    {
+      "creator_id": "attacker_flood",
+      "event": "rejected",
+      "limit": "5 per 1 minute",
+      "reason": "rate_limited",
+      "status": "rejected",
+      "timestamp": "2026-11-05T00:34:04+00:00"
+    }
+  ]
+}

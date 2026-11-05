@@ -39,38 +39,29 @@
 <!-- The path a submission takes, from arriving to the label a reader sees.
      Six or seven steps — this is the trace you wrote in Milestone 1. -->
 
-Provenance Guard takes a piece of writing and tells the reader, in plain words,
-whether it looks like a person or an AI tool wrote it. If it gets that wrong,
-the writer can appeal. A submission goes through seven steps:
+My service takes a piece of writing and guesses whether a person or an AI
+wrote it. Here's what happens to a submission:
 
-1. **It arrives at `POST /submit`** (`app.py`). Flask turns the JSON body into
-   a dict. In unit 8 the rate limiter checks the caller here first.
-2. **It's checked and given an ID** (`app.py::submit`). Missing, empty, too
-   short or too long input is refused with a `400` and logged as `rejected`.
-   Good input gets a `content_id`, the handle the appeal needs later.
-3. **Signal one reads it** (`detector.py::model_signal`). gpt2 measures how
-   predictable the first ~300 words are. That gives `model_score`, 0–1.
-4. **Signal two measures its shape** (`stylometry.py::style_signal`). It looks
-   at sentence-length spread, vocabulary variety and expressive punctuation.
-   That gives `style_score`, 0–1.
-5. **The two become one score** (`scoring.py::combine_signals`). The two
-   signals are averaged, and an AI label needs both of them to lean AI. That
-   gives `combined_score`.
-6. **The score becomes words** (`scoring.py::score_to_label`). The score is
-   mapped to a `guess` and a full-sentence `label` written for the reader.
-7. **It's logged, then answered** (`audit.py::log_decision`). Both signal
-   scores, the combined score, the guess, the label and `status: "decided"`
-   are appended to `logs/audit.jsonl`. Then the JSON response goes back with
-   the label.
+1. It's sent to `POST /submit` in `app.py`. The rate limiter checks it first.
+2. `app.py` checks the input. Bad input gets a `400` error and is logged.
+   Good input gets a `content_id`.
+3. `detector.py::model_signal` gives a `model_score` from 0 to 1, based on
+   how predictable the text is to gpt2.
+4. `stylometry.py::style_signal` gives a `style_score` from 0 to 1, based on
+   sentence lengths, word variety and punctuation.
+5. `scoring.py::combine_signals` turns the two scores into one.
+6. `scoring.py::score_to_label` turns that score into a label a person can
+   read.
+7. `audit.py` saves everything to `logs/audit.jsonl`, and the result is sent
+   back.
 
-If the writer disagrees, `POST /appeal` takes the `content_id` and their
-reasoning. It appends an appeal entry next to the original decision and sets
-the status to `under_review`. Nothing is re-scored or overwritten.
+If the writer thinks the result is wrong, they send their `content_id` to
+`POST /appeal`. That marks it `under_review` in the log.
 
-**Input rules for `/submit`:** `text` must be 30+ words and at most 20,000 characters; `creator_id` must be 1–100 characters.
-**Bad input gets a `400`** with one of `invalid_json`, `missing_text`, `text_too_short`, `text_too_long`, `missing_creator_id` (or `503 detector_unavailable` if the model won't load), and every refusal is logged as `rejected`.
-
-
+**Input rules:** `text` needs at least 30 words and at most 20,000
+characters. `creator_id` needs 1–100 characters. Breaking a rule gets a `400`
+error (`invalid_json`, `missing_text`, `text_too_short`, `text_too_long` or
+`missing_creator_id`).
 
 ---
 
@@ -84,81 +75,59 @@ the status to `under_review`. Nothing is re-scored or overwritten.
 
 ### Signal one — the model signal
 
-**What it measures:** Perplexity: how surprised gpt2 is by each next word,
-averaged over the text (the first 400 tokens). `detector.py::model_signal`
-maps it to 0–1 so that a perplexity of 45 scores 0.5. Lower perplexity, which
-means more predictable text, scores closer to 1 (more AI).
+**What it measures:** How predictable the text is to gpt2, a small AI model.
+The more predictable it is, the higher the score (closer to AI).
 
-**Why that might differ between human and AI writing:** A language model
-writes by repeatedly picking a likely next word, so its output is text another
-model finds easy to predict. People make odder choices: specific details,
-abrupt turns, words a model wouldn't guess.
+**Why that might differ between human and AI writing:** AI writes by picking
+likely next words, so its writing is easy for another AI to predict. People's
+writing is usually more surprising.
 
-**What it can't see:** Who wrote it. Predictability isn't authorship. Plain
-writing (common words, short sentences) is predictable whoever writes it, so
-second-language writers, younger writers and anyone writing simply on purpose
-score as machine-like. My plain human test paragraph scored 0.91, higher
-than the clearly-AI one at 0.88. It also misses AI text made "surprising"
-with rare words, synonym swaps or a paraphraser. It only reads the first ~300
-words. It scores famous or formulaic text (memorised quotes, recipes,
-boilerplate) as AI.
+**What it can't see:** Who actually wrote it. Plain, simple writing is
+predictable too, so people writing in a second language, or just writing
+simply, get scored as AI. My plain human test got 0.91, which is higher than
+my AI test (0.88). It also only reads the first ~300 words.
 
 ### Signal two — the style signal
 
-**What it measures:** The shape of the text, with no understanding of the
-words. It uses three measures, each scaled to 0–1 and averaged in
-`stylometry.py::style_signal`:
-- **Sentence-length spread:** the standard deviation of sentence lengths over
-  their mean. Even lengths read as AI-like: 0.20 or less counts as fully
-  AI-like, 0.70 or more as fully human.
-- **Type-token ratio:** unique words over total words, averaged over a 50-word
-  sliding window so text length doesn't skew it. 0.75 or less counts as fully
-  AI-like, 0.90 or more as fully human.
-- **Expressive punctuation:** semicolons, colons, dashes, brackets, `?` and
-  `!` per 100 words. None at all counts as fully AI-like, 5 or more as fully
-  human.
+**What it measures:** The shape of the text, not what it says. It looks at
+three things:
+- how much sentence lengths vary
+- how many different words are used
+- how much punctuation like `; : — ( ) ? !` is used
 
-A single-sentence text counts as neutral on spread.
+Low on each one means more AI-like. Each becomes a number from 0 to 1, and I
+average them.
 
-**Why that might differ between human and AI writing:** "Most likely next
-word" produces even, mid-length sentences, a safe middle band of vocabulary
-and tidy punctuation. Human writing is lumpier: a three-word sentence next to
-a forty-word one, a dash or a bracket where a comma would do.
+**Why that might differ between human and AI writing:** AI tends to write
+even sentences, safe words and simple punctuation. People's writing is
+messier.
 
-**What it can't see:** Anything the text says. It can't read, so any change
-to shape without a change to substance moves it. Typos raise vocabulary
-variety. Splitting sentences raises the spread. A pasted quote or a few
-dashes add punctuation. Asking the AI to "vary sentence length" beats it at
-the source. It also can't tell plain human writing from AI: my plain human
-test paragraph scored 0.82, so it shares signal one's blind spot instead of
-covering for it.
+**What it can't see:** It can't read. Typos, splitting sentences or adding
+dashes change the score without changing who wrote it. It also scores plain
+human writing as AI (0.82 on my test), which is the same mistake signal one
+makes.
 
 ### The combining rule
 
 <!-- Write the rule in words, then give the numbers. What happens when the two
      signals disagree? -->
 
-**The rule:** Average the two signals, equally weighted. An AI label also
-needs *both* signals to lean AI on their own: if either one is below the
-agreement floor, the score is capped just under the AI threshold, so it can
-land in "unsure" but never in "AI". One signal alone can't produce an
-accusation. When they disagree in the other direction (one says human), the
-average already pulls the score toward the middle, and I leave that alone,
-because two methods disagreeing *is* uncertainty.
+**The rule:** I average the two scores. But to get the AI label, *both*
+scores have to be at least 0.60. If either one is lower, the result can only
+be "unsure". That way one signal alone can't accuse someone.
 
 **The numbers:** (in `config.py`)
 
 | Setting | Value |
 |---|---|
-| `WEIGHT_MODEL_SIGNAL` | 0.5 |
-| `WEIGHT_STYLE_SIGNAL` | 0.5 |
-| `AGREEMENT_FLOOR` (each signal must reach this for an AI label) | 0.60 |
-| `HUMAN_THRESHOLD` (at or below → high-confidence human) | 0.35 |
-| `AI_THRESHOLD` (at or above → high-confidence AI) | 0.75 |
+| Model signal weight | 0.5 |
+| Style signal weight | 0.5 |
+| Each score needs at least this for an AI label | 0.60 |
+| Human label: score at or below | 0.35 |
+| AI label: score at or above | 0.75 |
 
-The AI threshold sits at 0.75, not the starter's 0.65, so the unsure band
-is wider on the AI side: a wrong accusation costs a writer more than a
-missed detection costs the site.
+I moved the AI cutoff up from 0.65 to 0.75, because wrongly accusing a writer
+is worse than missing some AI.
 
 **Where it lives:** `scoring.py::combine_signals`
 
@@ -167,24 +136,12 @@ missed detection costs the site.
 
 **A case where my two signals split, and what my rule does with it:**
 
-Formal human writing: a dense paragraph about a municipal permit dispute, with
-semicolons, a colon, dashes, and sentences from 4 to 40+ words. Signal one gave
-it **0.487** (the rare legal vocabulary surprised gpt2, so it was unsure).
-Signal two gave it **0.050** (very uneven sentences, varied vocabulary, lots
-of expressive punctuation). The average is **0.269**, below the human
-threshold, so it's labelled human. The rule did what I want here: when one
-signal is unsure and the other is confident it's human, the writer isn't
-pushed toward an accusation.
+My formal human test got 0.49 from signal one and 0.05 from signal two. The
+average is 0.27, so it's labelled human, which is right.
 
-The case my rule *can't* fix is the one where the signals agree and are both
-wrong. Plain human writing (short sentences, common words, no semicolons or
-dashes) scored **0.896** on signal one and **0.822** on signal two, so it
-passes the agreement floor and lands at **0.859**, which is high-confidence AI.
-Both blind spots hit the same writer, so no weighting of these two signals
-separates them from clearly-AI text (0.896). That is the false positive I
-traced in Milestone 1, and criterion 1 is where it will show up.
-
-
+The case my rule can't fix is when both signals are wrong together. My plain
+human test got 0.90 and 0.82. Both are over 0.60, so it's labelled AI (0.86).
+Both signals make the same mistake, so combining them doesn't help.
 
 ---
 
@@ -201,8 +158,8 @@ traced in Milestone 1, and criterion 1 is where it will show up.
 | unsure | above 0.35, below 0.75 | We can't tell whether this was written by a person or with an AI tool. That happens a lot, and it isn't a judgement about you or your work. If you wrote it yourself, you don't need to do anything — but if you'd like a person to look at it, you can ask for a review using the content ID shown with this result. |
 | high-confidence AI | 0.75 – 1.00 | This text has a lot in common with writing produced by AI tools, so we think it may not have been written by a person. This is an automatic guess and it can be wrong — clear, simple writing is sometimes mistaken for AI. If you wrote this yourself, you can ask a person to review it using the content ID shown with this result. |
 
-All three are reachable. From my test inputs: clearly human text scored 0.20
-(human), lightly edited AI scored 0.68 (unsure), and clearly AI text scored
+All three labels can be reached. In my tests, clearly human text scored 0.20
+(human), lightly edited AI scored 0.68 (unsure) and clearly AI text scored
 0.90 (AI).
 
 **Why I worded the "unsure" one this way:**
@@ -210,12 +167,11 @@ All three are reachable. From my test inputs: clearly human text scored 0.20
      sounding like an accusation, because the person reading it may well have
      written every word themselves. -->
 
-The person reading it may have written every word, so it says "we can't
-tell" about *us*, not "this might be AI" about *them*. It says outright that
-this result is common and isn't a judgement, and that a writer who wrote it
-themselves doesn't need to do anything. A review is offered as an option, not
-demanded. I didn't use the word "suspicious", any score, or "AI-generated"
-on its own, because those all read as an accusation with a hedge attached.
+Someone who gets this label may have written every word. So it says "we
+can't tell" instead of "this might be AI". It says this happens a lot, that
+it isn't a judgement about them, and that they don't have to do anything. I
+left out scores and words like "suspicious", because those sound like an
+accusation.
 
 ---
 
@@ -231,9 +187,8 @@ on its own, because those all read as an accusation with a hedge attached.
      two off the response, so leaving them out costs you next unit's
      diagnostics. -->
 
-This is plain human writing, the false positive from Milestone 1. Both
-signals read it as AI, so it gets the AI label. That's why it's the one I
-appeal.
+This is plain human writing. Both signals think it's AI, so it gets the AI
+label. That's why I appealed it.
 
 ```bash
 $ curl -X POST http://127.0.0.1:5000/submit \
@@ -277,8 +232,8 @@ $ curl -X POST http://127.0.0.1:5000/appeal \
 
 **What the log shows afterwards**
 
-The original decision is still there, unchanged, with the appeal appended
-after it, now `under_review`.
+The original decision is still there. The appeal is added after it, with
+status `under_review`.
 
 ```bash
 $ curl "http://127.0.0.1:5000/log?limit=2"
@@ -333,7 +288,7 @@ $ curl "http://127.0.0.1:5000/log?limit=2"
 
 ## Rate Limiting
 
-**My limits:** ___ per minute, ___ per day
+**My limits:** 10 per minute, 100 per day
 
 **Why those numbers and not others:**
 <!-- Think about two people: a real writer submitting their own work a few
@@ -341,17 +296,42 @@ $ curl "http://127.0.0.1:5000/log?limit=2"
      thresholds. Your numbers have to be liveable for the first and hostile to
      the second. -->
 
+A real writer submits a few times an hour. If they're fixing typos, maybe 5
+times in a minute. 10 a minute and 100 a day is plenty for them.
+
+A script trying to figure out my thresholds needs hundreds or thousands of
+tries. At 100 a day, 1,000 tries would take 10 days.
+
+The limit also stops the model from getting overloaded, since each check
+takes a second or two.
+
 **What a caller counts as:** <!-- per address, or per creator_id? They fail
 differently — one script can look like a thousand callers, and one household
 can look like one. -->
+
+By `creator_id`. If there isn't one, by IP address.
+
+The problem is that a script can just use a different `creator_id` every
+time and never hit the limit. The attack set did this. If I ran this for
+real, I'd add a limit per IP address too.
 
 **The run of status codes when I pushed past it:**
 
 <!-- python run_attacks.py --flood 15 -->
 
 ```
+$ python run_attacks.py --flood 15
+15 submissions as 'flood_tester' against http://127.0.0.1:5000
 
+400 400 400 400 400 400 400 400 400 400 429 429 429 429 429
+
+5 of 15 were rate limited.
+Wrote results/flood_2026-11-04_1846.md
 ```
+
+The first 10 come back `400` because the flood text is too short (under 30
+words). After 10, the limit kicks in and the rest get `429`. All 15 show up
+in the log.
 
 ---
 
@@ -360,20 +340,134 @@ can look like one. -->
 <!-- Every attack with its outcome and a held-or-broke mark.
      `run_attacks.py --label before` produces the table. -->
 
+I ran it on port 5001 because my Mac was using port 5000 for AirPlay. The
+rate limit was 5 per minute at the time.
 
+```bash
+python run_attacks.py --set attack_set --url http://127.0.0.1:5001 --label before
+```
+
+**How I marked them.** BROKE means the attack got what it was going for:
+- **evasion:** AI text didn't get the AI label ("unsure" counts as broke)
+- **false_positive:** human writing got labelled AI
+- **prompt_injection:** the text got the result it asked for
+- **malformed:** the server crashed or gave a `500`
+- **flood:** requests got past the limit
+
+| Family | Attacks | Held | Broke |
+|---|---|---|---|
+| `evasion` | 10 | 2 | 8 |
+| `false_positive` | 8 | 2 | 6 |
+| `prompt_injection` | 6 | 5 | 1 |
+| `malformed` | 20 | 20 | 0 |
+| `flood_same_creator` | 12 | 12 | 0 |
+| **Total** | **56** | **41** | **15** |
+
+| ID | Family | Targeting | Status | Guess | model | style | combined | Verdict | Why |
+|---|---|---|---|---|---|---|---|---|---|
+| EV01 | evasion | signal two: typos raise word variety | 200 | unsure | 0.16 | 0.67 | 0.42 | **BROKE** | AI text not caught |
+| EV02 | evasion | signal two: broken-up sentences raise length spread | 200 | unsure | 0.59 | 0.13 | 0.36 | **BROKE** | AI text not caught |
+| EV03 | evasion | signal two: a pasted quotation changes the shape | 200 | unsure | 0.67 | 0.38 | 0.52 | **BROKE** | AI text not caught |
+| EV04 | evasion | signal one: unusual words raise perplexity | 200 | unsure | 0.61 | 0.67 | 0.64 | **BROKE** | AI text not caught |
+| EV05 | evasion | both signals: heavy human editing pass | 200 | human | 0.32 | 0.36 | 0.34 | **BROKE** | labelled human |
+| EV06 | evasion | signal two: one very long sentence and one very short | 200 | unsure | 0.57 | 0.45 | 0.51 | **BROKE** | AI text not caught |
+| EV07 | evasion | signal two: padding with punctuation | 200 | unsure | 0.59 | 0.29 | 0.44 | **BROKE** | AI text not caught |
+| EV08 | evasion | signal one: text below the token window | 400 | — | — | — | — | **HELD** | refused, too short |
+| EV09 | evasion | both: AI text with a human opening paragraph bolted on | 200 | unsure | 0.70 | 0.49 | 0.60 | **BROKE** | AI text not caught |
+| EV10 | evasion | signal two: repeated stanza structure | 200 | ai | 0.98 | 0.87 | 0.92 | **HELD** | caught |
+| FP01 | false_positive | plain, clear human writing with no flourishes | 200 | unsure | 0.62 | 0.70 | 0.66 | **HELD** | not accused |
+| FP02 | false_positive | human writing in a formal register | 200 | ai | 0.74 | 0.93 | 0.83 | **BROKE** | human labelled AI |
+| FP03 | false_positive | a non-native English speaker writing carefully | 200 | ai | 0.81 | 0.76 | 0.78 | **BROKE** | human labelled AI |
+| FP04 | false_positive | a student essay written to a rubric | 200 | ai | 0.83 | 0.73 | 0.78 | **BROKE** | human labelled AI |
+| FP05 | false_positive | technical documentation written by a person | 200 | ai | 0.80 | 0.95 | 0.87 | **BROKE** | human labelled AI |
+| FP06 | false_positive | a person imitating a formal template | 200 | ai | 0.88 | 0.77 | 0.83 | **BROKE** | human labelled AI |
+| FP07 | false_positive | human writing that repeats a phrase deliberately | 200 | ai | 0.88 | 0.67 | 0.77 | **BROKE** | human labelled AI |
+| FP08 | false_positive | very short genuine human submission | 400 | — | — | — | — | **HELD** | not accused, but refused for being too short |
+| PI01 | prompt_injection | instruction to ignore the check | 200 | unsure | 0.46 | 0.36 | 0.41 | **HELD** | instruction did nothing |
+| PI02 | prompt_injection | instruction disguised as a system message | 200 | human | 0.20 | 0.22 | 0.21 | **BROKE** | got the human label it wanted |
+| PI03 | prompt_injection | instruction wrapped in the writer's voice | 200 | unsure | 0.59 | 0.24 | 0.42 | **HELD** | instruction did nothing |
+| PI04 | prompt_injection | attempt to make the label text hostile | 200 | unsure | 0.50 | 0.36 | 0.43 | **HELD** | labels can't be changed |
+| PI05 | prompt_injection | attempt to inject into the audit log | 400 | — | — | — | — | **HELD** | refused, too short |
+| PI06 | prompt_injection | instruction plus real human text | 200 | unsure | 0.56 | 0.70 | 0.63 | **HELD** | instruction did nothing |
+| MF01 | malformed | text is only whitespace | 400 | — | — | — | — | **HELD** | 400, no crash |
+| MF02 | malformed | text is a single character | 400 | — | — | — | — | **HELD** | 400, no crash |
+| MF03 | malformed | text is control characters | 400 | — | — | — | — | **HELD** | 400, no crash |
+| MF04 | malformed | text is only punctuation | 400 | — | — | — | — | **HELD** | 400, no crash |
+| MF05 | malformed | text is a very long single word | 400 | — | — | — | — | **HELD** | 400, no crash |
+| MF06 | malformed | text is emoji only | 400 | — | — | — | — | **HELD** | 400, no crash |
+| MF07 | malformed | text is right-to-left script | 400 | — | — | — | — | **HELD** | 400, no crash |
+| MF08 | malformed | text is 60,000 characters | 400 | — | — | — | — | **HELD** | 400, no crash |
+| RQ01 | malformed | no text field at all | 400 | — | — | — | — | **HELD** | 400, no crash |
+| RQ02 | malformed | no creator_id | 400 | — | — | — | — | **HELD** | 400, no crash |
+| RQ03 | malformed | text is a number | 400 | — | — | — | — | **HELD** | 400, no crash |
+| RQ04 | malformed | text is a list | 400 | — | — | — | — | **HELD** | 400, no crash |
+| RQ05 | malformed | text is null | 400 | — | — | — | — | **HELD** | 400, no crash |
+| RQ06 | malformed | creator_id is an object | 400 | — | — | — | — | **HELD** | 400, no crash |
+| RQ07 | malformed | body is a JSON array, not an object | 400 | — | — | — | — | **HELD** | 400, no crash |
+| RQ08 | malformed | body is unparseable JSON | 400 | — | — | — | — | **HELD** | 400, no crash |
+| RQ09 | malformed | body is empty | 400 | — | — | — | — | **HELD** | 400, no crash |
+| RQ10 | malformed | body is form-encoded, not JSON | 429 | — | — | — | — | **HELD** | 429, blocked before reaching my code |
+| RQ11 | malformed | body is JSON claiming to be plain text | 429 | — | — | — | — | **HELD** | 429, blocked before reaching my code |
+| RQ12 | malformed | deeply nested JSON | 400 | — | — | — | — | **HELD** | 400, no crash |
+| FL01_01 | flood_same_creator | 20 rapid submissions from one creator | 400 | — | — | — | — | **HELD** | refused, too short |
+| FL01_02 | flood_same_creator | 20 rapid submissions from one creator | 400 | — | — | — | — | **HELD** | refused, too short |
+| FL01_03 | flood_same_creator | 20 rapid submissions from one creator | 400 | — | — | — | — | **HELD** | refused, too short |
+| FL01_04 | flood_same_creator | 20 rapid submissions from one creator | 400 | — | — | — | — | **HELD** | refused, too short |
+| FL01_05 | flood_same_creator | 20 rapid submissions from one creator | 400 | — | — | — | — | **HELD** | refused, too short |
+| FL01_06 | flood_same_creator | 20 rapid submissions from one creator | 429 | — | — | — | — | **HELD** | blocked by the limit |
+| FL01_07 | flood_same_creator | 20 rapid submissions from one creator | 429 | — | — | — | — | **HELD** | blocked by the limit |
+| FL01_08 | flood_same_creator | 20 rapid submissions from one creator | 429 | — | — | — | — | **HELD** | blocked by the limit |
+| FL01_09 | flood_same_creator | 20 rapid submissions from one creator | 429 | — | — | — | — | **HELD** | blocked by the limit |
+| FL01_10 | flood_same_creator | 20 rapid submissions from one creator | 429 | — | — | — | — | **HELD** | blocked by the limit |
+| FL01_11 | flood_same_creator | 20 rapid submissions from one creator | 429 | — | — | — | — | **HELD** | blocked by the limit |
+| FL01_12 | flood_same_creator | 20 rapid submissions from one creator | 429 | — | — | — | — | **HELD** | blocked by the limit |
+
+**What the counts say.** Most problems are in two groups:
+- **False positives:** 6 of 8 real writers got labelled AI. Both scores were
+  above 0.60 every time, so my rule didn't help.
+- **Evasion:** 8 of 10 got past. 7 landed in "unsure" and 1 (EV05) got
+  labelled human.
+
+Nothing crashed.
 
 **Ten audit log entries from the run**
 
 <!-- Choose entries that show the interesting failures, not the ten easiest. -->
 
-```json
+I picked entries that show problems: 4 real writers labelled AI, 3 AI texts
+that got through, the injection that got labelled human, and 3 rejected
+requests (one too short, two rate limited).
 
+```json
+{"combined_score": 0.7827, "confidence": 0.7827, "content_id": "f6b443be-186a-47ab-936a-eb44f1f6cc24", "creator_id": "attacker_FP03", "guess": "ai", "label": "This text has a lot in common with writing produced by AI tools, so we think it may not have been written by a person. This is an automatic guess and it can be wrong — clear, simple writing is sometimes mistaken for AI. If you wrote this yourself, you can ask a person to review it using the content ID shown with this result.", "model_score": 0.8051, "rule": {"agreement_floor": 0.6, "ai_threshold": 0.75, "human_threshold": 0.35, "weight_model": 0.5, "weight_style": 0.5}, "status": "decided", "style_score": 0.7603, "text_sha256": "f876400f145c0cbc5c16df96a83f6229e8c50624fc35965309d7af61e78eb591", "timestamp": "2026-11-05T00:34:03+00:00", "truncated": false, "word_count": 83}
+{"combined_score": 0.8746, "confidence": 0.8746, "content_id": "6d7f4d8c-5ef7-4bdb-ad9b-8e0fb680431b", "creator_id": "attacker_FP05", "guess": "ai", "label": "This text has a lot in common with writing produced by AI tools, so we think it may not have been written by a person. This is an automatic guess and it can be wrong — clear, simple writing is sometimes mistaken for AI. If you wrote this yourself, you can ask a person to review it using the content ID shown with this result.", "model_score": 0.8005, "rule": {"agreement_floor": 0.6, "ai_threshold": 0.75, "human_threshold": 0.35, "weight_model": 0.5, "weight_style": 0.5}, "status": "decided", "style_score": 0.9487, "text_sha256": "7545ded553421ccf87614ff03476af3a7201673a13c9b2fbeda5fb6865b6253d", "timestamp": "2026-11-05T00:34:04+00:00", "truncated": false, "word_count": 70}
+{"combined_score": 0.8341, "confidence": 0.8341, "content_id": "9de7f64c-b5a2-493e-9be1-ab334f49c277", "creator_id": "attacker_FP02", "guess": "ai", "label": "This text has a lot in common with writing produced by AI tools, so we think it may not have been written by a person. This is an automatic guess and it can be wrong — clear, simple writing is sometimes mistaken for AI. If you wrote this yourself, you can ask a person to review it using the content ID shown with this result.", "model_score": 0.7387, "rule": {"agreement_floor": 0.6, "ai_threshold": 0.75, "human_threshold": 0.35, "weight_model": 0.5, "weight_style": 0.5}, "status": "decided", "style_score": 0.9296, "text_sha256": "631b8f514858e6565b1b9c6cd26b881a805685dd7cacb69bfc7d465c9e9c1874", "timestamp": "2026-11-05T00:34:03+00:00", "truncated": false, "word_count": 76}
+{"combined_score": 0.7742, "confidence": 0.7742, "content_id": "71c255e3-7d56-4f71-b9a5-dbcb5ad58d51", "creator_id": "attacker_FP07", "guess": "ai", "label": "This text has a lot in common with writing produced by AI tools, so we think it may not have been written by a person. This is an automatic guess and it can be wrong — clear, simple writing is sometimes mistaken for AI. If you wrote this yourself, you can ask a person to review it using the content ID shown with this result.", "model_score": 0.8816, "rule": {"agreement_floor": 0.6, "ai_threshold": 0.75, "human_threshold": 0.35, "weight_model": 0.5, "weight_style": 0.5}, "status": "decided", "style_score": 0.6667, "text_sha256": "73509863f15b33de726aff73dada059e1ce22d201f4b758fb1fb99736b8be0f5", "timestamp": "2026-11-05T00:34:04+00:00", "truncated": false, "word_count": 59}
+{"combined_score": 0.3399, "confidence": 0.6601, "content_id": "76268500-ab36-4d27-be9c-8b7cada66e40", "creator_id": "attacker_EV05", "guess": "human", "label": "We think this was probably written by a person.", "model_score": 0.3212, "rule": {"agreement_floor": 0.6, "ai_threshold": 0.75, "human_threshold": 0.35, "weight_model": 0.5, "weight_style": 0.5}, "status": "decided", "style_score": 0.3587, "text_sha256": "a20f4a78c4a56779b7954a3c8a3d23379d39e2cfd71e7aa1d6bb687be407f3f5", "timestamp": "2026-11-05T00:34:03+00:00", "truncated": false, "word_count": 81}
+{"combined_score": 0.4151, "confidence": 0.5849, "content_id": "493acfb4-44a8-4125-8679-1b557c738eca", "creator_id": "attacker_EV01", "guess": "unsure", "label": "We can't tell whether this was written by a person or with an AI tool. That happens a lot, and it isn't a judgement about you or your work. If you wrote it yourself, you don't need to do anything — but if you'd like a person to look at it, you can ask for a review using the content ID shown with this result.", "model_score": 0.1635, "rule": {"agreement_floor": 0.6, "ai_threshold": 0.75, "human_threshold": 0.35, "weight_model": 0.5, "weight_style": 0.5}, "status": "decided", "style_score": 0.6667, "text_sha256": "c9c118b0916bad8afd0a8c469d4c1e2e566af634c9a3632121921d1d5835236b", "timestamp": "2026-11-05T00:34:03+00:00", "truncated": false, "word_count": 84}
+{"combined_score": 0.2108, "confidence": 0.7892, "content_id": "2f491da0-5967-4121-aab3-82039f309fa6", "creator_id": "attacker_PI02", "guess": "human", "label": "We think this was probably written by a person.", "model_score": 0.2044, "rule": {"agreement_floor": 0.6, "ai_threshold": 0.75, "human_threshold": 0.35, "weight_model": 0.5, "weight_style": 0.5}, "status": "decided", "style_score": 0.2173, "text_sha256": "61f8f3b0b0b9bcae0f3558ded6225d5fbed5ac3d5d76d004a5ddf4bd9dfb18df", "timestamp": "2026-11-05T00:34:04+00:00", "truncated": false, "word_count": 42}
+{"combined_score": 0.5963, "confidence": 0.5963, "content_id": "d6b2b173-d058-42a2-97b5-5505c03b8641", "creator_id": "attacker_EV09", "guess": "unsure", "label": "We can't tell whether this was written by a person or with an AI tool. That happens a lot, and it isn't a judgement about you or your work. If you wrote it yourself, you don't need to do anything — but if you'd like a person to look at it, you can ask for a review using the content ID shown with this result.", "model_score": 0.7042, "rule": {"agreement_floor": 0.6, "ai_threshold": 0.75, "human_threshold": 0.35, "weight_model": 0.5, "weight_style": 0.5}, "status": "decided", "style_score": 0.4883, "text_sha256": "6a1df5493d488bb6ecf34ad402e25dd37bdb9eab8b4d15ada43d500d6ffde81e", "timestamp": "2026-11-05T00:34:03+00:00", "truncated": false, "word_count": 110}
+{"creator_id": "attacker_FP08", "event": "rejected", "reason": "text_too_short", "status": "rejected", "timestamp": "2026-11-05T00:34:04+00:00"}
+{"creator_id": "unknown", "event": "rejected", "limit": "5 per 1 minute", "reason": "rate_limited", "status": "rejected", "timestamp": "2026-11-05T00:34:04+00:00"}
+{"creator_id": "attacker_flood", "event": "rejected", "limit": "5 per 1 minute", "reason": "rate_limited", "status": "rejected", "timestamp": "2026-11-05T00:34:04+00:00"}
 ```
+
+What these show:
+- All the wrongly accused writers had both scores above 0.60, so my rule
+  didn't protect them.
+- EV01 used typos to fool signal two, but it fooled signal one more (0.16).
+- The `unknown` entry is RQ10 or RQ11. They had no `creator_id`, so they were
+  limited by IP address and never reached my code.
 
 **The single worst outcome** — the one I'd least want to explain to a writer
 whose work got caught by it:
 
-
+**FP03:** someone writing carefully in their second language got labelled AI
+(0.78). This is the same person I worried about in Milestone 1. They use
+simple words and even sentences because they're being careful, and both
+signals read that as AI (0.81 and 0.76). The label says it might be wrong and
+lets them appeal, but it still tells them we don't think they wrote their own
+work.
 
 ---
 
