@@ -24,6 +24,7 @@ Routes:
     GET  /health      is the service up, and is the model loaded
 """
 
+import hashlib
 import uuid
 
 from flask import Flask, jsonify, request
@@ -158,7 +159,7 @@ MAX_REASONING_CHARS = 5_000
 
 
 @app.post("/submit")
-# @limiter.limit(f"{config.RATE_LIMIT_PER_MINUTE}/minute;{config.RATE_LIMIT_PER_DAY}/day")
+@limiter.limit(f"{config.RATE_LIMIT_PER_MINUTE}/minute;{config.RATE_LIMIT_PER_DAY}/day")
 def submit():
     """
     Take a piece of text, decide about it, log the decision, answer.
@@ -264,6 +265,19 @@ def submit():
         style_score=style_score,
         combined_score=combined_score,
         label=label,
+        # Beyond the nine required fields: enough to reconstruct the decision
+        # without reading the code, even after the rules change in unit 8.
+        confidence=confidence,
+        word_count=len(text.split()),
+        truncated=truncated,
+        text_sha256=hashlib.sha256(text.encode("utf-8")).hexdigest(),
+        rule={
+            "weight_model": config.WEIGHT_MODEL_SIGNAL,
+            "weight_style": config.WEIGHT_STYLE_SIGNAL,
+            "agreement_floor": config.AGREEMENT_FLOOR,
+            "human_threshold": config.HUMAN_THRESHOLD,
+            "ai_threshold": config.AI_THRESHOLD,
+        },
     )
 
     return jsonify({
