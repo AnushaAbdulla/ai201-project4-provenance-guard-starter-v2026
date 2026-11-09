@@ -483,8 +483,7 @@ work.
 | 4. Appeals work, fake IDs refused | 10 of 10 | 10/10 | 10/10 | 10/10 | MET |
 | 5. Bad input gets a 400 and is logged | 6 of 6 | 6/6 | 6/6 | 6/6 | MET |
 
-I ran `python run_eval.py --label before --url http://127.0.0.1:5001` (port
-5001 because AirPlay was using 5000). All five were met in all three runs.
+I ran `python run_eval.py --label before --url http://127.0.0.1:5001`. All five were met in all three runs.
 The scores were exactly the same every run, because gpt2 gives the same
 answer for the same text.
 
@@ -1008,7 +1007,56 @@ All of this is Run 1, from `results/run_2026-11-04_1957_before.md`, made by
 
      Look for a pattern. Five failures on one signal is one problem, not five. -->
 
+**My criteria:** I met all five in all three runs, so there are no misses to
+diagnose. But my targets were too easy (see the end of this section). The 15
+broken attacks are diagnosed below. They come down to two problems.
 
+**Problem 1: an attacker only has to fool one signal (7 attacks).**
+
+My combining rule says *both* scores must be at least 0.60 for an AI label. I
+did that to protect writers, but it also means AI text only needs one score
+pushed under 0.60 to escape into "unsure".
+
+**Problem 2: my two signals are really measuring the same thing (6 attacks).**
+
+- **FP02–FP07:** formal writing, careful second-language writing, a rubric
+  essay, technical docs, a template, and writing that repeats a phrase on
+  purpose. All six were labelled AI (0.77–0.87), and both scores were above
+  0.60 every time (lowest 0.67).
+  - FP03 (second-language writer) has even sentences (spread 0.33), no
+    expressive punctuation, and common, predictable words (model 0.81).
+  - FP05 (technical docs) repeats "service" and "set" (word variety 0.63),
+    with even sentences and no expressive punctuation, so style hit 0.95.
+- **Stage:** signal one *and* signal two, which means the combining rule can't
+  help. **Mechanism:** both signals reward messy, surprising writing. Careful,
+  regular writing is predictable to gpt2 *and* even in shape. So when one
+  signal is wrong, the other is wrong the same way. My "two signals" act like
+  one signal counted twice.
+
+**The other two broken attacks:**
+- **EV04:** swapped in rare words like "efficacious" and "desiderata". The
+  model score dropped to 0.61 and style stayed at 0.67, so both passed 0.60,
+  but the average (0.64) was under my AI cutoff of 0.75. **Stage:** signal
+  one, then the label mapping. **Mechanism:** rare words surprise gpt2, and my
+  high AI cutoff leaves room for that.
+- **EV05:** heavy human editing of AI text. Both scores dropped (0.32 and 0.36)
+  and it was labelled human. **Stage:** both signals. **Mechanism:** a person
+  really did rewrite it, so it now looks human to both signals. I don't think
+  any shape-based signal can catch this.
+
+**Were my targets too low?** Yes. I met everything, but the attack set
+labelled 6 of 8 real writers as AI, and my own tests didn't catch that:
+- Criterion 2 compared *averages* and only used my normal writing. My plain
+  "I went to the store" piece scored 0.87, higher than 4 of my 5 AI texts
+  (0.75–0.87). The averages hid that overlap.
+- Criterion 1 mixed my normal writing with plain writing. My normal writing
+  mostly scored low, so it padded the result.
+- Criteria 3, 4 and 5 test that the code works. They were always going to
+  pass once it was built.
+
+**The criterion I'd tighten is criterion 2.** Instead of comparing averages,
+it should say every human piece (including the plain ones) scores lower than
+every AI piece. That would have been missed.
 
 ---
 
