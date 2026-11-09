@@ -1215,14 +1215,66 @@ so every change in the tables comes from that one line.
 <!-- For each attack still getting through and each criterion still missed:
      what you'd do, and why you stopped. -->
 
+After my change, 12 attacks still get through. I didn't miss any criteria,
+but criterion 2 was too easy (see Diagnoses).
 
+**AI text that fools signal two (EV02, EV03, EV06, EV07, EV09)**
+- *What I'd do:* make signal two harder to push around. Skip one-word
+  sentences and quoted text when measuring sentence lengths, and cap how much
+  punctuation can count. For EV09, score each paragraph on its own, so a
+  human opening can't cover for the AI part.
+- *Why I stopped:* I could only make one change. Each of these is a new guess
+  that could also push real writers' scores up, and I'd want to test that
+  first.
+
+**Typos (EV01)**
+- *What I'd do:* fix spelling before signal one reads the text, so typos
+  don't look "surprising" to gpt2.
+- *Why I stopped:* one change only. Also, autocorrect could change a real
+  writer's words.
+
+**Rare words (EV04)**
+- *What I'd do:* nothing simple. It scored 0.64. Catching it means lowering
+  the AI cutoff, which would accuse more real writers.
+- *Why I stopped:* it goes against my improvement. I chose writers over this.
+
+**Heavy human editing (EV05)**
+- *What I'd do:* probably nothing. A person really rewrote it, so it reads
+  as human to both signals.
+- *Why I stopped:* I don't think a shape-based detector can catch this.
+
+**Fake "SYSTEM" line (PI02)**
+- *What I'd do:* flag lines that look like instructions (like "SYSTEM:" or
+  `guess=`) and score the text without them.
+- *Why I stopped:* one change only, and deleting part of someone's text
+  before scoring it could backfire on real writers.
+
+**Real writers still labelled AI (FP02, FP05, FP06)**
+- *What I'd do:* stop relying only on how plain the writing is. One idea is to
+  compare each piece to that writer's own earlier submissions, so a careful
+  writer is measured against themselves. Another is to never give the AI
+  label to formal or technical writing, and send it to a person to check
+  instead.
+- *Why I stopped:* both are bigger than one change, and I don't have anyone's
+  earlier writing to compare against. Raising the cutoff to about 0.88 would
+  clear these three, but then none of my AI test texts would be caught.
+
+**Criterion 2 (too easy)**
+- *What I'd do:* change it to "every human piece, including the plain ones,
+  scores lower than every AI piece" and rerun. It would be missed: my plain
+  "I went to the store" piece (0.87) scores higher than 4 of my 5 AI texts.
+- *Why I stopped:* I decided to keep my criteria as I first wrote them and
+  just name this one here.
 
 **The trade I'd make if this ran for real:**
 
 <!-- Two sentences. Fewer wrong accusations means more AI text getting through.
      Say which way you'd go and WHO PAYS FOR IT. -->
 
-
+I'd go even further toward fewer wrong accusations, even though more AI text
+would get through. The site and honest writers competing against AI-written
+work pay for that, but a wrongly accused writer, often someone writing in
+their second language, pays much more.
 
 <!-- ═════════════════════════════════════════════════════════════════════
 
